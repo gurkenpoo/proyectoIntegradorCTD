@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Center,
@@ -12,16 +12,14 @@ import {
 } from '@chakra-ui/react';
 
 interface Product {
-  id: number;
+  id: number; // Agrega la propiedad id para facilitar la identificación de los productos
   name: string;
   originalPrice: number;
   discountPrice: number;
-  imageURL: string;
+  imageUrls: string[]; // Array para almacenar las URLs de las imágenes
 }
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-  const IMAGE = product.imageURL;
-
   return (
     <Center py={12}>
       <Box
@@ -34,38 +32,20 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         rounded={'lg'}
         pos={'relative'}
         zIndex={1}>
-        <Box
-          rounded={'lg'}
-          mt={-12}
-          pos={'relative'}
-          height={'230px'}
-          _after={{
-            transition: 'all .3s ease',
-            content: '""',
-            w: 'full',
-            h: 'full',
-            pos: 'absolute',
-            top: 5,
-            left: 0,
-            backgroundImage: `url(${IMAGE})`,
-            filter: 'blur(15px)',
-            zIndex: -1,
-          }}
-          _groupHover={{
-            _after: {
-              filter: 'blur(20px)',
-            },
-          }}>
-          <Image
-            rounded={'lg'}
-            height={230}
-            width={282}
-            objectFit={'cover'}
-            src={IMAGE}
-            alt={product.name}
-          />
-        </Box>
-        <Stack pt={10} align={'center'}>
+        <Stack spacing={4}>
+          {/* Mostrar la primera imagen del array imageUrls */}
+          {product.imageUrls.length > 0 && (
+            <Box>
+              <Image
+                rounded={'lg'}
+                height={230}
+                width={282}
+                objectFit={'cover'}
+                src={product.imageUrls[0]} // Usar la primera URL del array
+                alt={product.name}
+              />
+            </Box>
+          )}
           <Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
             Brand
           </Text>
@@ -76,9 +56,11 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             <Text fontWeight={800} fontSize={'xl'}>
               ${product.originalPrice}
             </Text>
-            <Text textDecoration={'line-through'} color={'gray.600'}>
-              ${product.discountPrice}
-            </Text>
+            {product.discountPrice > 0 && (
+              <Text textDecoration={'line-through'} color={'gray.600'}>
+                ${product.discountPrice}
+              </Text>
+            )}
           </Stack>
         </Stack>
       </Box>
@@ -92,22 +74,29 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     const storedProducts = localStorage.getItem('products');
     if (storedProducts) {
-      const allProducts: Product[] = JSON.parse(storedProducts);
-      // Selecciona aleatoriamente hasta 5 productos
-      const shuffledProducts = allProducts.sort(() => 0.5 - Math.random());
-      const selectedProducts = shuffledProducts.slice(0, 10);
-      setProducts(selectedProducts);
+      try {
+        const parsedProducts: Product[] = JSON.parse(storedProducts);
+        setProducts(parsedProducts);
+      } catch (error) {
+        console.error('Error al parsear los productos:', error);
+        // Puedes manejar el error de diferentes formas:
+        // 1. Mostrar un mensaje de error al usuario
+        // 2. Inicializar products con un array vacío
+      }
     }
   }, []);
 
   return (
     <Box>
-      <Heading as="h1" size="xl" mb={6} textAlign="center">
+      <Heading as="h1" size="xl" mb={6} textAlign="center" mt={8}>
         Lista de Productos
       </Heading>
       <SimpleGrid columns={2} spacing={4}>
         {products.map((product, index) => (
-          <ProductCard key={index} product={product} />
+          // Verifica que product.imageUrls no sea undefined antes de mostrarlo
+          product.imageUrls && (
+            <ProductCard key={index} product={product} />
+          )
         ))}
       </SimpleGrid>
     </Box>

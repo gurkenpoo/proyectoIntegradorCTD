@@ -11,12 +11,14 @@ import {
   FormLabel,
   Textarea,
   Button,
+  IconButton,
 } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 
 interface Product {
   name: string;
   description: string;
-  imageURL: string;
+  imageUrls: string[]; // Array de URLs de las imágenes (Base64 o del servidor)
   originalPrice: number;
   discountPrice: number;
 }
@@ -28,29 +30,71 @@ interface Props {
 const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
-  const [productImageURL, setProductImageURL] = useState('');
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [originalPrice, setOriginalPrice] = useState('');
   const [discountPrice, setDiscountPrice] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleAddProduct = () => {
-    // Verifica si los campos de precio son válidos
+  const convertFileToUrl = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleAddImage = async (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const newImageFiles = [...imageFiles];
+      newImageFiles[index] = files[0];
+      setImageFiles(newImageFiles);
+
+      try {
+        const imageUrl = await convertFileToUrl(files[0]);
+        console.log(imageUrl); // Puedes usar esta URL en la imagen del producto
+      } catch (error) {
+        console.error('Error converting file to URL:', error);
+      }
+    }
+  };
+
+  const addImageField = () => {
+    setImageFiles([...imageFiles, null as any]);
+  };
+
+  const handleAddProduct = async () => { // Cambia a async para manejar las promesas de convertFileToUrl
     const originalPriceValue = originalPrice.trim() !== '' ? parseFloat(originalPrice) : 0;
     const discountPriceValue = discountPrice.trim() !== '' ? parseFloat(discountPrice) : 0;
 
     const newProduct: Product = {
       name: productName,
       description: productDescription,
-      imageURL: productImageURL,
+      imageUrls: [], // Inicializa imageUrls como un array vacío
       originalPrice: isNaN(originalPriceValue) ? 0 : originalPriceValue,
       discountPrice: isNaN(discountPriceValue) ? 0 : discountPriceValue,
     };
 
-    // Obtiene los productos existentes de localStorage
+    // Convertir las imágenes a Base64 y guardarlas en imageUrls
+    for (const file of imageFiles) {
+      if (file) {
+        const imageUrl = await convertFileToUrl(file);
+        newProduct.imageUrls.push(imageUrl); // Agrega la URL al array
+      }
+    }
+
+    // Verifica si se agregaron imágenes
+    if (newProduct.imageUrls.length === 0) {
+      setErrorMessage('Debes agregar al menos una imagen');
+      return;
+    }
+
     const storedProducts = localStorage.getItem('products');
     const existingProducts: Product[] = storedProducts ? JSON.parse(storedProducts) : [];
 
-    // Verifica si ya existe un producto con el mismo nombre
     const productExists = existingProducts.some(product => product.name === newProduct.name);
 
     if (productExists) {
@@ -58,28 +102,25 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
       return;
     }
 
-    // Llama a la función proporcionada desde las props para agregar el nuevo producto
     onAddProduct(newProduct);
 
-    // Guarda el nuevo producto en localStorage
     const updatedProducts = [...existingProducts, newProduct];
     localStorage.setItem('products', JSON.stringify(updatedProducts));
 
-    // Limpia los campos después de agregar el producto
     setProductName('');
     setProductDescription('');
-    setProductImageURL('');
+    setImageFiles([]);
     setOriginalPrice('');
     setDiscountPrice('');
     setErrorMessage('');
   };
 
-  const bgColor = useColorModeValue('gray.100', 'gray.700'); // Ajusta el color de fondo según el modo de color
+  const bgColor = useColorModeValue('gray.100', 'gray.700');
 
   return (
     <Box bg={bgColor} p={4} borderRadius="lg">
       <Stack spacing={4}>
-        <Heading fontSize="xl">Admin Panel</Heading>
+        <Heading fontSize="xl" mb={4}>Admin Panel</Heading>
 
         {errorMessage && (
           <Text color="red.500" textAlign="center">
@@ -107,12 +148,21 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
         </FormControl>
 
         <FormControl isRequired>
-          <FormLabel htmlFor="productImageURL">URL de la Imagen:</FormLabel>
-          <Input
-            type="text"
-            id="productImageURL"
-            value={productImageURL}
-            onChange={(e) => setProductImageURL(e.target.value)}
+          <FormLabel>Imágenes del Producto:</FormLabel>
+          {imageFiles.map((file, index) => (
+            <Input
+              key={index}
+              type="file"
+              onChange={(e) => handleAddImage(e, index)}
+              mb={2}
+            />
+          ))}
+          <IconButton
+            aria-label="Agregar Imagen"
+            icon={<AddIcon />}
+            onClick={addImageField}
+            colorScheme="teal"
+            mb={2}
           />
         </FormControl>
 
