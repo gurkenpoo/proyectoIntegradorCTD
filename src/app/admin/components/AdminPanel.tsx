@@ -31,6 +31,7 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
   const [productImageURL, setProductImageURL] = useState('');
   const [originalPrice, setOriginalPrice] = useState('');
   const [discountPrice, setDiscountPrice] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAddProduct = () => {
     // Verifica si los campos de precio son válidos
@@ -45,12 +46,22 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
       discountPrice: isNaN(discountPriceValue) ? 0 : discountPriceValue,
     };
 
+    // Obtiene los productos existentes de localStorage
+    const storedProducts = localStorage.getItem('products');
+    const existingProducts: Product[] = storedProducts ? JSON.parse(storedProducts) : [];
+
+    // Verifica si ya existe un producto con el mismo nombre
+    const productExists = existingProducts.some(product => product.name === newProduct.name);
+
+    if (productExists) {
+      setErrorMessage('Un producto con este nombre ya existe.');
+      return;
+    }
+
     // Llama a la función proporcionada desde las props para agregar el nuevo producto
     onAddProduct(newProduct);
 
     // Guarda el nuevo producto en localStorage
-    const storedProducts = localStorage.getItem('products');
-    const existingProducts = storedProducts ? JSON.parse(storedProducts) : [];
     const updatedProducts = [...existingProducts, newProduct];
     localStorage.setItem('products', JSON.stringify(updatedProducts));
 
@@ -60,6 +71,7 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
     setProductImageURL('');
     setOriginalPrice('');
     setDiscountPrice('');
+    setErrorMessage('');
   };
 
   const bgColor = useColorModeValue('gray.100', 'gray.700'); // Ajusta el color de fondo según el modo de color
@@ -68,6 +80,12 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
     <Box bg={bgColor} p={4} borderRadius="lg">
       <Stack spacing={4}>
         <Heading fontSize="xl">Admin Panel</Heading>
+
+        {errorMessage && (
+          <Text color="red.500" textAlign="center">
+            {errorMessage}
+          </Text>
+        )}
 
         <FormControl isRequired>
           <FormLabel htmlFor="productName">Nombre del Producto:</FormLabel>

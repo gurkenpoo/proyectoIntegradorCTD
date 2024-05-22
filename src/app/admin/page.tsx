@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import AdminPanel from './components/AdminPanel';
+import Header from "@/components/Header";
 
 function AdminPage() {
   const handleAddProduct = (newProduct: any) => {
@@ -9,6 +10,7 @@ function AdminPage() {
 
   return (
     <div>
+        <Header />
       <AdminPanel onAddProduct={handleAddProduct} />
     </div>
   );

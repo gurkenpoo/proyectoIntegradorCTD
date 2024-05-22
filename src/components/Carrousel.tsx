@@ -18,17 +18,17 @@ const cardData = [
   {
     title: 'Viña no se me ocurre nada mas',
     price: '$37.000',
-    image: 'https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80',
+    image: 'https://enotourchile.com/wp-content/uploads/2016/05/2-150x150.jpg',
   },
   {
     title: 'City Tour Republica y algo mas',
     price: '$25.000',
-    image: 'https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80',
+    image: 'https://enotourchile.com/wp-content/uploads/2016/05/1-1-150x150.jpg',
   },
   {
     title: 'Vino, Salvador',
     price: '$45.000',
-    image: 'https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80',
+    image: 'https://enotourchile.com/wp-content/uploads/2016/05/CITY1-1-150x150.jpg',
   },
 ];
 

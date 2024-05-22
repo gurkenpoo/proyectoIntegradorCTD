@@ -23,7 +23,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const IMAGE = product.imageURL;
 
   return (
-    <Center py={12}>
+    <Center py={2}>
       <Box
         role={'group'}
         p={6}
@@ -62,7 +62,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             width={282}
             objectFit={'cover'}
             src={IMAGE}
-            alt="#"
+            alt={product.name}
           />
         </Box>
         <Stack pt={10} align={'center'}>
@@ -92,16 +92,26 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     const storedProducts = localStorage.getItem('products');
     if (storedProducts) {
-      setProducts(JSON.parse(storedProducts));
+      const allProducts: Product[] = JSON.parse(storedProducts);
+      // Selecciona aleatoriamente hasta 10 productos
+      const shuffledProducts = allProducts.sort(() => 0.5 - Math.random());
+      setProducts(shuffledProducts);
     }
   }, []);
 
   return (
-    <SimpleGrid columns={2} spacing={4}>
-      {products.map((product, index) => (
-        <ProductCard key={index} product={product} />
-      ))}
-    </SimpleGrid>
+    <Box
+      maxH="600px" // Altura máxima del contenedor
+      overflowY="auto" // Habilita el scroll vertical
+      p={4}
+      borderWidth="1px"
+      borderRadius="lg">
+      <SimpleGrid columns={2} spacing={4}>
+        {products.slice(0, 10).map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
+      </SimpleGrid>
+    </Box>
   );
 };
 
