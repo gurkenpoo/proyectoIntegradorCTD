@@ -16,17 +16,17 @@ import {
 // Datos de las tarjetas
 const cardData = [
   {
-    title: 'Viña no se me ocurre nada mas',
+    title: 'Viña Haras de Pirque',
     price: '$37.000',
     image: 'https://enotourchile.com/wp-content/uploads/2016/05/2-150x150.jpg',
   },
   {
-    title: 'City Tour Republica y algo mas',
+    title: 'City Tour Santiago y Pueblito los Dominicos',
     price: '$25.000',
     image: 'https://enotourchile.com/wp-content/uploads/2016/05/1-1-150x150.jpg',
   },
   {
-    title: 'Vino, Salvador',
+    title: 'Vino, Valparaíso y Viña del Mar',
     price: '$45.000',
     image: 'https://enotourchile.com/wp-content/uploads/2016/05/CITY1-1-150x150.jpg',
   },
@@ -38,29 +38,29 @@ const ProductCard: React.FC<{ title: string; price: string; image: string }> = (
   image,
 }) => {
   return (
-    <Center py={12}>
+    <Center py={6}>
       <Box
         role={'group'}
         p={6}
-        maxW={'330px'}
+        maxW={'400px'}
         w={'full'}
-        bg={useColorModeValue('white', 'gray.800')}
+        bg={useColorModeValue('beige', 'gray.800')}
         boxShadow={'2xl'}
         rounded={'lg'}
         pos={'relative'}
         zIndex={1}>
         <Box
           rounded={'lg'}
-          mt={-12}
+          mt={-1}
           pos={'relative'}
-          height={'230px'}
+          height={'300px'}
           _after={{
             transition: 'all .3s ease',
             content: '""',
             w: 'full',
             h: 'full',
             pos: 'absolute',
-            top: 5,
+            top: 0,
             left: 0,
             backgroundImage: `url(${image})`,
             filter: 'blur(15px)',
@@ -68,27 +68,25 @@ const ProductCard: React.FC<{ title: string; price: string; image: string }> = (
           }}
           _groupHover={{
             _after: {
-              filter: 'blur(20px)',
+              filter: 'blur(10px)',
             },
           }}>
           <Image
             rounded={'lg'}
-            height={230}
-            width={282}
+            height={300}
+            width={352}
             objectFit={'cover'}
             src={image}
-            alt="#"
+            alt={title}
           />
         </Box>
         <Stack pt={10} align={'center'}>
-          <Heading fontSize={'xl'} fontFamily={'body'} fontWeight={500}>
+          <Heading fontSize={'lg'} fontFamily={'body'} fontWeight={500} textAlign={'center'}>
             {title}
           </Heading>
-          <Stack direction={'row'} align={'center'}>
-            <Text fontWeight={800} fontSize={'xl'}>
-              {price}
-            </Text>
-          </Stack>
+          <Text fontWeight={800} fontSize={'xl'}>
+            {price}
+          </Text>
         </Stack>
       </Box>
     </Center>
@@ -97,10 +95,10 @@ const ProductCard: React.FC<{ title: string; price: string; image: string }> = (
 
 const ProductShowcase: React.FC = () => {
   return (
-    <Box bg="#F9EFEE" py={10}>
+    <Box bg="gray.500" py={10}>
       <Container maxW="container.xl">
-        <Heading as="h2" size="xl" color="#B1A69C" mb={6} textAlign="center">
-          LO MAS DESTACADO | VEN A CONOCER LO ULTIMO EN TOURS!
+        <Heading as="h2" size="xl" color="WHITE" mb={6} textAlign="center">
+          TOURS DESTACADOS | TU OPORTUNIDAD DE CONOCER LO MEJOR 
         </Heading>
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
           {cardData.map((card, index) => (

@@ -30,7 +30,7 @@ export default function WithSubnavigation() {
   return (
     <Box>
       <Flex
-        bg={useColorModeValue('white', 'black')}
+        bg={useColorModeValue('#F5F5F5', 'black')}
         color={useColorModeValue('gray.600', 'white')}
         minH={'90px'}
         py={{ base: 2 }}
@@ -54,9 +54,9 @@ export default function WithSubnavigation() {
           <Text
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
             fontFamily={'heading'}
-            color={useColorModeValue('gray.800', 'white')}>
+            color={useColorModeValue('#663399', 'white')}>
             Logo
-          </Text>
+          </Text> 
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
             <DesktopNav />
@@ -74,8 +74,8 @@ export default function WithSubnavigation() {
           <Button
             as={'a'}
             fontSize={'sm'}
-            fontWeight={600}
-            color={'white'}
+            fontWeight={700}
+            color={'#663399'}
             bg={'pink.400'}
             href={'#'}
             _hover={{

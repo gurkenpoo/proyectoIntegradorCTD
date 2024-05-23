@@ -58,33 +58,61 @@ const SocialButton = ({
   )
 }
 
-export default function SmallWithLogoLeft() {
+export default function SmallCentered() {
   return (
     <Box
-      bg={useColorModeValue('white', 'gray.900')}
+      bg={useColorModeValue('#D3D3D3', 'gray.900')}
       color={useColorModeValue('gray.700', 'gray.200')}>
       <Container
         as={Stack}
         maxW={'6xl'}
         py={4}
-        direction={{ base: 'column', md: 'row' }}
         spacing={4}
-        justify={{ base: 'center', md: 'space-between' }}
-        align={{ base: 'center', md: 'center' }}>
+        justify={'center'}
+        align={'center'}>
         <Logo />
-        <Text>© 2022 Chakra Templates. All rights reserved</Text>
         <Stack direction={'row'} spacing={6}>
-          <SocialButton label={'Twitter'} href={'#'}>
-            <FaTwitter />
-          </SocialButton>
-          <SocialButton label={'YouTube'} href={'#'}>
-            <FaYoutube />
-          </SocialButton>
-          <SocialButton label={'Instagram'} href={'#'}>
-            <FaInstagram />
-          </SocialButton>
+          <Box as="a" href={'#'}>
+            Home
+          </Box>
+          <Box as="a" href={'#'}>
+            About
+          </Box>
+          <Box as="a" href={'#'}>
+            Blog
+          </Box>
+          <Box as="a" href={'#'}>
+            Contact
+          </Box>
         </Stack>
       </Container>
+
+      <Box
+        borderTopWidth={1}
+        borderStyle={'solid'}
+        borderColor={useColorModeValue('gray.200', 'gray.700')}>
+        <Container
+          as={Stack}
+          maxW={'6xl'}
+          py={4}
+          direction={{ base: 'column', md: 'row' }}
+          spacing={4}
+          justify={{ base: 'center', md: 'space-between' }}
+          align={{ base: 'center', md: 'center' }}>
+          <Text>© 2022 Chakra Templates. All rights reserved</Text>
+          <Stack direction={'row'} spacing={6}>
+            <SocialButton label={'Twitter'} href={'#'}>
+              <FaTwitter />
+            </SocialButton>
+            <SocialButton label={'YouTube'} href={'#'}>
+              <FaYoutube />
+            </SocialButton>
+            <SocialButton label={'Instagram'} href={'#'}>
+              <FaInstagram />
+            </SocialButton>
+          </Stack>
+        </Container>
+      </Box>
     </Box>
   )
 }
