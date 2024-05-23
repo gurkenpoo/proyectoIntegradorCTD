@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Box, Center, Heading, Text, Stack, Image } from '@chakra-ui/react';
 
 interface ProductProps {
+  id: any;
   name: string;
   description: string;
   imageURL: string;

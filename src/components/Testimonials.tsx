@@ -100,61 +100,58 @@ const TestimonialAvatar = ({
 
 export default function WithSpeechBubbles() {
   return (
-    <Box bg={useColorModeValue('#FAE8E0', 'gray.700')}>
+    <Box bg={useColorModeValue('#F9F6F0', 'gray.700')}>
       <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
         <Stack spacing={0} align={'center'}>
-          <Heading>Our Clients Speak</Heading>
-          <Text>We have been working with clients around the world</Text>
+          <Heading>Que Dicen Nuestros Clientes</Heading>
+          <Text>Trabajamos con clientes de todo el mundo</Text>
         </Stack>
         <Stack
           direction={{ base: 'column', md: 'row' }}
           spacing={{ base: 10, md: 4, lg: 10 }}>
           <Testimonial>
             <TestimonialContent>
-              <TestimonialHeading>Efficient Collaborating</TestimonialHeading>
+              <TestimonialHeading>Una Experiencia Inolvidable</TestimonialHeading>
               <TestimonialText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed
-                imperdiet nibh lectus feugiat nunc sem.
+                El tour de vinos superó todas mis expectativas. Desde la primera bodega hasta la última copa, cada momento fue mágico. Los guías eran increíblemente conocedores y apasionados, lo que hizo que cada visita fuera educativa y entretenida.
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
               src={
                 'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
               }
-              name={'Jane Cooper'}
+              name={'Javier Martínez, Buenos Aires'}
               title={'CEO at ABC Corporation'}
             />
           </Testimonial>
           <Testimonial>
             <TestimonialContent>
-              <TestimonialHeading>Intuitive Design</TestimonialHeading>
+              <TestimonialHeading>Descubrí Mi Vino Favorito</TestimonialHeading>
               <TestimonialText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed
-                imperdiet nibh lectus feugiat nunc sem.
+                Nunca pensé que encontraría mi vino perfecto en este tour. Las degustaciones fueron muy variadas y me dieron la oportunidad de probar vinos que nunca habría considerado.
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
               src={
                 'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
               }
-              name={'Jane Cooper'}
+              name={'Luciano Fernandez, Barcelona'}
               title={'CEO at ABC Corporation'}
             />
           </Testimonial>
           <Testimonial>
             <TestimonialContent>
-              <TestimonialHeading>Mindblowing Service</TestimonialHeading>
+              <TestimonialHeading>Un Viaje Gourmet y Cultural</TestimonialHeading>
               <TestimonialText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque sed
-                imperdiet nibh lectus feugiat nunc sem.
+                El tour de vinos fue una combinación perfecta de cultura, historia y gastronomía. Aprendimos sobre el proceso de elaboración del vino, visitamos bodegas históricas y disfrutamos de maridajes con exquisiteces locales.
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
               src={
                 'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
               }
-              name={'Jane Cooper'}
-              title={'CEO at ABC Corporation'}
+              name={'María González, Ciudad de México'}
+              title={'Designer at CAD co'}
             />
           </Testimonial>
         </Stack>

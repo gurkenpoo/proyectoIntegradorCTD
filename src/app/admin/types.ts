@@ -1,8 +1,10 @@
-
-interface Product {
+export interface Product {
+  id: number;
   name: string;
   description: string;
-//   images: string[];
+  imageUrls: string[];
+  originalPrice: number;
+  discountPrice: number;
+  category: string;
 }
 
-export default Product;

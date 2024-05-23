@@ -12,15 +12,18 @@ import {
   Textarea,
   Button,
   IconButton,
+  Select,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 
 interface Product {
+  id: number;
   name: string;
   description: string;
-  imageUrls: string[]; // Array de URLs de las imágenes (Base64 o del servidor)
+  imageUrls: string[];
   originalPrice: number;
   discountPrice: number;
+  category: string;
 }
 
 interface Props {
@@ -33,6 +36,14 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [originalPrice, setOriginalPrice] = useState('');
   const [discountPrice, setDiscountPrice] = useState('');
+  const [categories, setCategories] = useState<string[]>([
+    'Tour de Degustación Tradicional',
+    'Tour de Maridaje de Vinos y Comida',
+    'Tour de Vendimia',
+    'Tour de Paisajes y Viñedos',
+  ]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [newCategory, setNewCategory] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const convertFileToUrl = (file: File): Promise<string> => {
@@ -55,7 +66,7 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
 
       try {
         const imageUrl = await convertFileToUrl(files[0]);
-        console.log(imageUrl); // Puedes usar esta URL en la imagen del producto
+        console.log(imageUrl);
       } catch (error) {
         console.error('Error converting file to URL:', error);
       }
@@ -66,34 +77,46 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
     setImageFiles([...imageFiles, null as any]);
   };
 
-  const handleAddProduct = async () => { // Cambia a async para manejar las promesas de convertFileToUrl
+  const handleAddProduct = async () => {
     const originalPriceValue = originalPrice.trim() !== '' ? parseFloat(originalPrice) : 0;
     const discountPriceValue = discountPrice.trim() !== '' ? parseFloat(discountPrice) : 0;
 
-    const newProduct: Product = {
-      name: productName,
-      description: productDescription,
-      imageUrls: [], // Inicializa imageUrls como un array vacío
-      originalPrice: isNaN(originalPriceValue) ? 0 : originalPriceValue,
-      discountPrice: isNaN(discountPriceValue) ? 0 : discountPriceValue,
-    };
+    const categoryToUse = newCategory.trim() !== '' ? newCategory : selectedCategory;
 
-    // Convertir las imágenes a Base64 y guardarlas en imageUrls
-    for (const file of imageFiles) {
-      if (file) {
-        const imageUrl = await convertFileToUrl(file);
-        newProduct.imageUrls.push(imageUrl); // Agrega la URL al array
-      }
-    }
-
-    // Verifica si se agregaron imágenes
-    if (newProduct.imageUrls.length === 0) {
-      setErrorMessage('Debes agregar al menos una imagen');
+    if (!categoryToUse) {
+      setErrorMessage('Debes seleccionar o agregar una categoría.');
       return;
     }
 
     const storedProducts = localStorage.getItem('products');
     const existingProducts: Product[] = storedProducts ? JSON.parse(storedProducts) : [];
+
+    // Calcular el newId de forma segura
+    const newId = existingProducts.length > 0
+      ? Math.max(...existingProducts.map(product => product.id || 0)) + 1
+      : 1;
+
+    const newProduct: Product = {
+      id: newId,
+      name: productName,
+      description: productDescription,
+      imageUrls: [],
+      originalPrice: isNaN(originalPriceValue) ? 0 : originalPriceValue,
+      discountPrice: isNaN(discountPriceValue) ? 0 : discountPriceValue,
+      category: categoryToUse,
+    };
+
+    for (const file of imageFiles) {
+      if (file) {
+        const imageUrl = await convertFileToUrl(file);
+        newProduct.imageUrls.push(imageUrl);
+      }
+    }
+
+    if (newProduct.imageUrls.length === 0) {
+      setErrorMessage('Debes agregar al menos una imagen');
+      return;
+    }
 
     const productExists = existingProducts.some(product => product.name === newProduct.name);
 
@@ -112,7 +135,17 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
     setImageFiles([]);
     setOriginalPrice('');
     setDiscountPrice('');
+    setSelectedCategory('');
+    setNewCategory('');
     setErrorMessage('');
+  };
+
+  const handleAddCategory = () => {
+    if (newCategory.trim() && !categories.includes(newCategory)) {
+      setCategories([...categories, newCategory]);
+      setSelectedCategory(newCategory);
+      setNewCategory('');
+    }
   };
 
   const bgColor = useColorModeValue('gray.100', 'gray.700');
@@ -164,6 +197,32 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
             colorScheme="teal"
             mb={2}
           />
+        </FormControl>
+
+        <FormControl isRequired>
+          <FormLabel htmlFor="category">Categoría:</FormLabel>
+          <Select
+            placeholder="Seleccionar categoría"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </Select>
+          <FormLabel htmlFor="newCategory" mt={4}>Agregar Nueva Categoría:</FormLabel>
+          <Input
+            type="text"
+            id="newCategory"
+            placeholder="Nueva categoría"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+          />
+          <Button mt={2} onClick={handleAddCategory} colorScheme="teal">
+            Agregar Categoría
+          </Button>
         </FormControl>
 
         <FormControl isRequired>

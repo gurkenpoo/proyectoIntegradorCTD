@@ -61,8 +61,8 @@ const SocialButton = ({
 export default function SmallCentered() {
   return (
     <Box
-      bg={useColorModeValue('#D3D3D3', 'gray.900')}
-      color={useColorModeValue('gray.700', 'gray.200')}>
+      bg={useColorModeValue('#203946', 'gray.900')}
+      color={useColorModeValue('WHITE', 'gray.200')}>
       <Container
         as={Stack}
         maxW={'6xl'}
@@ -72,16 +72,16 @@ export default function SmallCentered() {
         align={'center'}>
         <Logo />
         <Stack direction={'row'} spacing={6}>
-          <Box as="a" href={'#'}>
+          <Box as="a" href={'/'}>
             Home
           </Box>
-          <Box as="a" href={'#'}>
-            About
+          <Box as="a" href={'/admin'}>
+            admin
           </Box>
-          <Box as="a" href={'#'}>
+          <Box as="a" href={'https://gitlab.com/bastianpoo/pi3'}>
             Blog
           </Box>
-          <Box as="a" href={'#'}>
+          <Box as="a" href={'https://gitlab.com/bastianpoo/pi3'}>
             Contact
           </Box>
         </Stack>
@@ -99,7 +99,7 @@ export default function SmallCentered() {
           spacing={4}
           justify={{ base: 'center', md: 'space-between' }}
           align={{ base: 'center', md: 'center' }}>
-          <Text>© 2022 Chakra Templates. All rights reserved</Text>
+          <Text>© 2024 Wine Studios Tours. All rights reserved</Text>
           <Stack direction={'row'} spacing={6}>
             <SocialButton label={'Twitter'} href={'#'}>
               <FaTwitter />
