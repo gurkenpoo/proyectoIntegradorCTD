@@ -1,23 +1,17 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
 import {
   Box,
-  Container,
-  Stack,
-  Text,
-  Image,
-  Flex,
-  VStack,
-  Button,
-  Heading,
-  SimpleGrid,
-  StackDivider,
+  Center,
   useColorModeValue,
-  List,
-  ListItem,
+  Heading,
+  Text,
+  Stack,
+  Input,
+  Button,
+  FormControl,
+  FormLabel,
 } from '@chakra-ui/react';
-import { MdLocalShipping } from 'react-icons/md';
 
 interface Product {
   id: number;
@@ -29,184 +23,70 @@ interface Product {
   category: string;
 }
 
-const ProductDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+const ProductViewer: React.FC = () => {
+  const [productId, setProductId] = useState<string>('');
   const [product, setProduct] = useState<Product | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
-  useEffect(() => {
+  const handleFetchProduct = () => {
     const storedProducts = localStorage.getItem('products');
-    if (storedProducts) {
-      try {
-        
-        const parsedProducts: Product[] = JSON.parse(storedProducts);
-        const foundProduct = parsedProducts.find(prod => prod.id === (parseInt(id ?? '') || -1));
-
-        setProduct(foundProduct || null);
-      } catch (error) {
-        console.error('Error al parsear los productos:', error);
-      }
+    const products: Product[] = storedProducts ? JSON.parse(storedProducts) : [];
+    const foundProduct = products.find((prod) => prod.id === Number(productId));
+    
+    if (foundProduct) {
+      setProduct(foundProduct);
+      setErrorMessage('');
+    } else {
+      setProduct(null);
+      setErrorMessage('Producto no encontrado');
     }
-  }, [id]);
+  };
 
-  if (!product) {
-    return <Text>Producto no encontrado</Text>;
-  }
+  const bgColor = useColorModeValue('gray.100', 'gray.700');
 
   return (
-    <Container maxW={'7xl'}>
-      <SimpleGrid
-        columns={{ base: 1, lg: 2 }}
-        spacing={{ base: 8, md: 10 }}
-        py={{ base: 18, md: 24 }}>
-        <Flex>
-          <Image
-            rounded={'md'}
-            alt={'product image'}
-            src={product.imageUrls[0]}
-            fit={'cover'}
-            align={'center'}
-            w={'100%'}
-            h={{ base: '100%', sm: '400px', lg: '500px' }}
+    <Box bg={bgColor} p={4} borderRadius="lg">
+      <Stack spacing={4}>
+        <Heading fontSize="xl" mb={4}>Buscar Producto</Heading>
+
+        <FormControl>
+          <FormLabel htmlFor="productId">ID del Producto:</FormLabel>
+          <Input
+            type="text"
+            id="productId"
+            value={productId}
+            onChange={(e) => setProductId(e.target.value)}
           />
-        </Flex>
-        <Stack spacing={{ base: 6, md: 10 }}>
-          <Box as={'header'}>
-            <Heading
-              lineHeight={1.1}
-              fontWeight={600}
-              fontSize={{ base: '2xl', sm: '4xl', lg: '5xl' }}>
-              {product.name}
-            </Heading>
-            <Text
-              color={useColorModeValue('gray.900', 'gray.400')}
-              fontWeight={300}
-              fontSize={'2xl'}>
-              ${product.originalPrice}
-            </Text>
-            {product.discountPrice > 0 && (
-              <Text textDecoration={'line-through'} color={'gray.600'}>
-                ${product.discountPrice}
-              </Text>
-            )}
+        </FormControl>
+
+        <Button colorScheme="teal" onClick={handleFetchProduct}>
+          Buscar Producto
+        </Button>
+
+        {errorMessage && (
+          <Text color="red.500" textAlign="center">
+            {errorMessage}
+          </Text>
+        )}
+
+        {product && (
+          <Box p={4} borderRadius="md" bg={useColorModeValue('white', 'gray.800')} boxShadow="lg">
+            <Heading fontSize="lg" mb={2}>{product.name}</Heading>
+            <Text mb={2}><strong>Descripción:</strong> {product.description}</Text>
+            <Text mb={2}><strong>Categoría:</strong> {product.category}</Text>
+            <Text mb={2}><strong>Precio Original:</strong> ${product.originalPrice.toFixed(2)}</Text>
+            <Text mb={2}><strong>Precio con Descuento:</strong> ${product.discountPrice.toFixed(2)}</Text>
+            <Text mb={2}><strong>Imágenes:</strong></Text>
+            <Stack spacing={2}>
+              {product.imageUrls.map((url, index) => (
+                <img key={index} src={url} alt={`Imagen ${index + 1}`} style={{ maxWidth: '100%' }} />
+              ))}
+            </Stack>
           </Box>
-
-          <Stack
-            spacing={{ base: 4, sm: 6 }}
-            direction={'column'}
-            divider={
-              <StackDivider borderColor={useColorModeValue('gray.200', 'gray.600')} />
-            }>
-            <VStack spacing={{ base: 4, sm: 6 }}>
-              <Text
-                color={useColorModeValue('gray.500', 'gray.400')}
-                fontSize={'2xl'}
-                fontWeight={'300'}>
-                {product.description}
-              </Text>
-            </VStack>
-            <Box>
-              <Text
-                fontSize={{ base: '16px', lg: '18px' }}
-                color={useColorModeValue('yellow.500', 'yellow.300')}
-                fontWeight={'500'}
-                textTransform={'uppercase'}
-                mb={'4'}>
-                Features
-              </Text>
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
-                <List spacing={2}>
-                  <ListItem>Chronograph</ListItem>
-                  <ListItem>Master Chronometer Certified</ListItem>
-                  <ListItem>Tachymeter</ListItem>
-                </List>
-                <List spacing={2}>
-                  <ListItem>Anti‑magnetic</ListItem>
-                  <ListItem>Chronometer</ListItem>
-                  <ListItem>Small seconds</ListItem>
-                </List>
-              </SimpleGrid>
-            </Box>
-            <Box>
-              <Text
-                fontSize={{ base: '16px', lg: '18px' }}
-                color={useColorModeValue('yellow.500', 'yellow.300')}
-                fontWeight={'500'}
-                textTransform={'uppercase'}
-                mb={'4'}>
-                Product Details
-              </Text>
-              <List spacing={2}>
-                <ListItem>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Between lugs:
-                  </Text>{' '}
-                  20 mm
-                </ListItem>
-                <ListItem>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Bracelet:
-                  </Text>{' '}
-                  leather strap
-                </ListItem>
-                <ListItem>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Case:
-                  </Text>{' '}
-                  Steel
-                </ListItem>
-                <ListItem>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Case diameter:
-                  </Text>{' '}
-                  42 mm
-                </ListItem>
-                <ListItem>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Dial color:
-                  </Text>{' '}
-                  Black
-                </ListItem>
-                <ListItem>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Crystal:
-                  </Text>{' '}
-                  Domed, scratch‑resistant sapphire crystal with anti‑reflective treatment
-                  inside
-                </ListItem>
-                <ListItem>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Water resistance:
-                  </Text>{' '}
-                  5 bar (50 metres / 167 feet){' '}
-                </ListItem>
-              </List>
-            </Box>
-          </Stack>
-
-          <Button
-            rounded={'none'}
-            w={'full'}
-            mt={8}
-            size={'lg'}
-            py={'7'}
-            bg={useColorModeValue('gray.900', 'gray.50')}
-            color={useColorModeValue('white', 'gray.900')}
-            textTransform={'uppercase'}
-            _hover={{
-              transform: 'translateY(2px)',
-              boxShadow: 'lg',
-            }}>
-            Add to cart
-          </Button>
-
-          <Stack direction="row" alignItems="center" justifyContent={'center'}>
-            <MdLocalShipping />
-            <Text>2-3 business days delivery</Text>
-          </Stack>
-        </Stack>
-      </SimpleGrid>
-    </Container>
+        )}
+      </Stack>
+    </Box>
   );
 };
 
-export default ProductDetails;
+export default ProductViewer;

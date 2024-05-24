@@ -1,14 +1,14 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ProductDetails from './components/ProductDetails';
+import Header from "@/components/Header";
+import ProductDetails from "./components/ProductDetails";
 
-function App() {
+function DetailsPage() {
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/details/:id" element={<ProductDetails />} />
-      </Routes>
-    </Router>
+    <div>
+        <Header />
+        <ProductDetails />
+    </div>
   );
 }
 
-export default App;
+export default DetailsPage;

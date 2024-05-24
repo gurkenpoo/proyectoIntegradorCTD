@@ -10,6 +10,7 @@ import {
   Image,
   SimpleGrid,
   Select,
+  Link,
 } from '@chakra-ui/react';
 
 interface Product {
@@ -23,7 +24,6 @@ interface Product {
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const handleClick = () => {
-    // Aquí puedes definir la lógica para manejar el clic en el producto
     console.log('Producto clickeado:', product);
   };
 
@@ -61,6 +61,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
           <Stack direction={'row'} align={'center'}>
             <Text fontWeight={800} fontSize={'xl'}>
               ${product.originalPrice}
+              <Link href={`/details/${product.id}`}>Ver detalles</Link>
             </Text>
             {product.discountPrice > 0 && (
               <Text textDecoration={'line-through'} color={'gray.600'}>
@@ -76,7 +77,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [randomProducts, setRandomProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const storedProducts = localStorage.getItem('products');
@@ -84,25 +85,29 @@ const ProductList: React.FC = () => {
       try {
         const parsedProducts: Product[] = JSON.parse(storedProducts);
         setProducts(parsedProducts);
-        // Obtén 10 productos aleatorios de la lista completa
-        const randomIndices = getRandomIndices(parsedProducts.length, 10);
-        const randomProducts = randomIndices.map(index => parsedProducts[index]);
-        setRandomProducts(randomProducts);
       } catch (error) {
         console.error('Error al parsear los productos:', error);
       }
     }
   }, []);
 
-  const getRandomIndices = (max: number, count: number) => {
-    const indices: number[] = [];
-    while (indices.length < count) {
-      const randomIndex = Math.floor(Math.random() * max);
-      if (!indices.includes(randomIndex)) {
-        indices.push(randomIndex);
-      }
+  useEffect(() => {
+    if (products.length > 0) {
+      const randomProducts = getRandomProducts(products);
+      setFilteredProducts(randomProducts);
     }
-    return indices;
+  }, [products]);
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const category = event.target.value;
+    const filtered = category === '' ? products : products.filter(product => product.category === category);
+    const randomFilteredProducts = getRandomProducts(filtered);
+    setFilteredProducts(randomFilteredProducts);
+  };
+
+  const getRandomProducts = (products: Product[]) => {
+    const shuffled = [...products].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, Math.min(shuffled.length, 10));
   };
 
   return (
@@ -110,8 +115,21 @@ const ProductList: React.FC = () => {
       <Heading as="h1" size="xl" mb={6} textAlign="center" mt={8}>
         Lista de Productos
       </Heading>
+      <Center>
+        <Select
+          placeholder='Filtrar por Categoria'
+          width={400}
+          textAlign="center"
+          onChange={handleCategoryChange}
+        >
+          <option value='Tour de Degustación Tradicional'>Tour de Degustación Tradicional</option>
+          <option value='Tour de Maridaje de Vinos y Comida'>Tour de Maridaje de Vinos y Comida</option>
+          <option value='Tour de Vendimia'>Tour de Vendimia</option>
+          <option value='Tour de Paisajes y Viñedos'>Tour de Paisajes y Viñedos</option>
+        </Select>
+      </Center>
       <SimpleGrid columns={2} spacing={4}>
-        {randomProducts.map(product => (
+        {filteredProducts.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}
       </SimpleGrid>

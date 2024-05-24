@@ -28,8 +28,14 @@ export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure()
 
   return (
-    <Box>
+    <Box as="header"
+        position="fixed"
+        top="0"
+        width="100%"
+        zIndex={1000}
+        >
       <Flex
+
         bg={useColorModeValue('#F5F5F5', 'black')}
         color={useColorModeValue('gray.600', 'white')}
         minH={'90px'}
@@ -39,10 +45,12 @@ export default function WithSubnavigation() {
         borderStyle={'solid'}
         borderColor={useColorModeValue('white', 'gray.900')}
         align={'center'}>
+        
         <Flex
           flex={{ base: 1, md: 'auto' }}
           ml={{ base: -2 }}
           display={{ base: 'flex', md: 'none' }}>
+          
           <IconButton
             onClick={onToggle}
             icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
