@@ -95,7 +95,7 @@ const ProductCard: React.FC<{ title: string; price: string; image: string }> = (
 
 const ProductShowcase: React.FC = () => {
   return (
-    <Box bg="gray.500" py={10}>
+    <Box bg="gray.500" py={10} mt={90}>
       <Container maxW="container.xl">
         <Heading as="h2" size="xl" color="WHITE" mb={6} textAlign="center">
           TOURS DESTACADOS | TU OPORTUNIDAD DE CONOCER LO MEJOR 

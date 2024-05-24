@@ -151,9 +151,9 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
   const bgColor = useColorModeValue('gray.100', 'gray.700');
 
   return (
-    <Box bg={bgColor} p={4} borderRadius="lg">
+    <Box bg={bgColor} p={4} borderRadius="lg" mt={90}>
       <Stack spacing={4}>
-        <Heading fontSize="xl" mb={4}>Admin Panel</Heading>
+        <Heading fontSize="xl" mb={4}>Panel de Administracion</Heading>
 
         {errorMessage && (
           <Text color="red.500" textAlign="center">
