@@ -23,55 +23,58 @@ interface Product {
 }
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-  const handleClick = () => {
-    console.log('Producto clickeado:', product);
-  };
-
   return (
-    <Center py={12} onClick={handleClick} cursor="pointer">
-      <Box
-        role={'group'}
-        p={6}
-        maxW={'330px'}
-        w={'full'}
-        bg={useColorModeValue('white', 'gray.800')}
-        boxShadow={'2xl'}
-        rounded={'lg'}
-        pos={'relative'}
-        zIndex={1}>
-        <Stack spacing={4}>
-          {product.imageUrls.length > 0 && (
-            <Box>
-              <Image
-                rounded={'lg'}
-                height={230}
-                width={282}
-                objectFit={'cover'}
-                src={product.imageUrls[0]}
-                alt={product.name}
-              />
-            </Box>
-          )}
-          <Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
-            {product.category}
-          </Text>
-          <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
-            {product.name}
-          </Heading>
-          <Stack direction={'row'} align={'center'}>
-            <Text fontWeight={800} fontSize={'xl'}>
-              ${product.originalPrice}
-              <Link href={`/details/${product.id}`}>Ver detalles</Link>
-            </Text>
-            {product.discountPrice > 0 && (
-              <Text textDecoration={'line-through'} color={'gray.600'}>
-                ${product.discountPrice}
-              </Text>
+    <Box
+      as={Link}
+      href={`/details/${product.id}`}
+      _hover={{
+        textDecoration: 'none',
+      }}
+      cursor="pointer">
+      <Center py={12}>
+        <Box
+          role={'group'}
+          p={6}
+          maxW={'330px'}
+          w={'full'}
+          bg={useColorModeValue('white', 'gray.800')}
+          boxShadow={'2xl'}
+          rounded={'lg'}
+          pos={'relative'}
+          zIndex={1}>
+          <Stack spacing={4}>
+            {product.imageUrls.length > 0 && (
+              <Box>
+                <Image
+                  rounded={'lg'}
+                  height={230}
+                  width={282}
+                  objectFit={'cover'}
+                  src={product.imageUrls[0]}
+                  alt={product.name}
+                />
+              </Box>
             )}
+            <Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
+              {product.category}
+            </Text>
+            <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
+              {product.name}
+            </Heading>
+            <Stack direction={'row'} align={'center'}>
+              <Text fontWeight={800} fontSize={'xl'}>
+                ${product.originalPrice}
+              </Text>
+              {product.discountPrice > 0 && (
+                <Text textDecoration={'line-through'} color={'gray.600'}>
+                  ${product.discountPrice}
+                </Text>
+              )}
+            </Stack>
           </Stack>
-        </Stack>
-      </Box>
-    </Center>
+        </Box>
+      </Center>
+    </Box>
   );
 };
 
@@ -128,11 +131,12 @@ const ProductList: React.FC = () => {
           <option value='Tour de Paisajes y Viñedos'>Tour de Paisajes y Viñedos</option>
         </Select>
       </Center>
-      <SimpleGrid columns={2} spacing={4}>
+      <SimpleGrid   columns={2} spacing={4}>
         {filteredProducts.map(product => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard  key={product.id} product={product} />
         ))}
-      </SimpleGrid>
+        <Stack id='ListaProductos'></Stack>
+      </SimpleGrid >
     </Box>
   );
 };
