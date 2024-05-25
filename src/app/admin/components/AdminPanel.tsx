@@ -13,6 +13,7 @@ import {
   Button,
   IconButton,
   Select,
+  useToast
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 
@@ -31,6 +32,7 @@ interface Props {
 }
 
 const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
+  const toast = useToast();
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -138,6 +140,15 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
     setSelectedCategory('');
     setNewCategory('');
     setErrorMessage('');
+
+    // Mostrar el toast solo si no hay errores
+    toast({
+      title: 'Agregado',
+      description: 'El Tour/Producto fue agregado correctamente',
+      status: 'success',
+      duration: 3000, // Cambia la duración según tus necesidades
+      isClosable: true,
+    });
   };
 
   const handleAddCategory = () => {
@@ -213,7 +224,7 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
             ))}
           </Select>
           <FormLabel htmlFor="newCategory" mt={4}>Agregar Nueva Categoría:</FormLabel>
-          <Input
+                    <Input
             type="text"
             id="newCategory"
             placeholder="Nueva categoría"
@@ -246,7 +257,12 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
         </FormControl>
 
         <Center>
-          <Button colorScheme="teal" onClick={handleAddProduct}>
+          <Button 
+            colorScheme="teal" 
+            onClick={() => {
+              handleAddProduct();
+            }}
+          >
             Agregar Producto
           </Button>
         </Center>
