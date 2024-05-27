@@ -1,0 +1,19 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "akatosh",
+  "password": "postgres",
+  "database": "carmenere",
+  "synchronize": true,
+  "logging": false,
+  "entities": [
+    "src/app/entities/**/*.ts"
+  ],
+  "migrations": [
+    "src/migration/**/*.ts"
+  ],
+  "subscribers": [
+    "src/subscriber/**/*.ts"
+  ]
+}
