@@ -10,6 +10,7 @@ import {
   Avatar,
   useColorModeValue,
 } from '@chakra-ui/react'
+import { color } from 'framer-motion'
 
 interface Props {
   children: React.ReactNode
@@ -100,17 +101,17 @@ const TestimonialAvatar = ({
 
 export default function WithSpeechBubbles() {
   return (
-    <Box bg={useColorModeValue('#F9F6F0', 'gray.700')}>
+    <Box bg={useColorModeValue('#Ffffff', 'gray.700') }>
       <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
-        <Stack spacing={0} align={'center'}>
+        <Stack spacing={0} align={'center'} color={'#292864'} >
           <Heading>Que Dicen Nuestros Clientes</Heading>
           <Text>Trabajamos con clientes de todo el mundo</Text>
         </Stack>
         <Stack
           direction={{ base: 'column', md: 'row' }}
-          spacing={{ base: 10, md: 4, lg: 10 }}>
-          <Testimonial>
-            <TestimonialContent>
+          spacing={{ base: 10, md: 4, lg: 10 }} color={'#292864'} >
+          <Testimonial >
+            <TestimonialContent >
               <TestimonialHeading>Una Experiencia Inolvidable</TestimonialHeading>
               <TestimonialText>
                 El tour de vinos superó todas mis expectativas. Desde la primera bodega hasta la última copa, cada momento fue mágico. Los guías eran increíblemente conocedores y apasionados, lo que hizo que cada visita fuera educativa y entretenida.
