@@ -61,7 +61,7 @@ export default function WithSubnavigation() {
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
           <Box>
-  <Image src='./src/components/logo10.svg' alt='Logo' />
+  {/* <Image src='https://bit.ly/dan-abramov' alt='Logo' /> */}
 </Box>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
