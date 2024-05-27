@@ -37,7 +37,7 @@ export default function WithSubnavigation() {
         >
       <Flex
 
-        bg={useColorModeValue('#F5F5F5', 'black')}
+        bg={useColorModeValue('#FFFFFF', 'black')}
         color={useColorModeValue('gray.600', 'white')}
         minH={'90px'}
         py={{ base: 2 }}
@@ -81,8 +81,8 @@ export default function WithSubnavigation() {
             as={'a'}
             fontSize={'sm'}
             fontWeight={700}
-            color={'#663399'}
-            bg={'pink.400'}
+            color={'#FFFFFF'}
+            bg={'#b592c3'}
             href={'#'}
             _hover={{
               bg: 'pink.300',
@@ -116,7 +116,7 @@ const DesktopNav = () => {
                 href={navItem.href ?? '#'}
                 fontSize={'sm'}
                 fontWeight={500}
-                color={linkColor}
+                color={'#707070'}
                 _hover={{
                   textDecoration: 'none',
                   color: linkHoverColor,

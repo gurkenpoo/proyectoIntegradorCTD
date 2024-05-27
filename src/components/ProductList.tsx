@@ -37,7 +37,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
           p={6}
           maxW={'330px'}
           w={'full'}
-          bg={useColorModeValue('white', 'gray.800')}
+          bg={useColorModeValue('#FFFFFF', 'gray.800')}
           boxShadow={'2xl'}
           rounded={'lg'}
           pos={'relative'}
@@ -114,16 +114,20 @@ const ProductList: React.FC = () => {
   };
 
   return (
-    <Box>
-      <Heading as="h1" size="xl" mb={6} textAlign="center" mt={8}>
+    <Box >
+      <Heading  as="h1" size="xl" mb={6} textAlign="center" mt={8} color={'#b592c3'} >
         Lista de Productos
       </Heading>
       <Center>
         <Select
+          color={'#8D8D8D'}
           placeholder='Filtrar por Categoria'
           width={400}
           textAlign="center"
-          onChange={handleCategoryChange}
+          onChange={handleCategoryChange
+          
+          }
+          mb={40}
         >
           <option value='Tour de Degustación Tradicional'>Tour de Degustación Tradicional</option>
           <option value='Tour de Maridaje de Vinos y Comida'>Tour de Maridaje de Vinos y Comida</option>
@@ -131,9 +135,10 @@ const ProductList: React.FC = () => {
           <option value='Tour de Paisajes y Viñedos'>Tour de Paisajes y Viñedos</option>
         </Select>
       </Center>
-      <SimpleGrid   columns={2} spacing={4}>
+      
+      <SimpleGrid bgColor={"#c9bbde47"}  columns={2} spacing={4}>
         {filteredProducts.map(product => (
-          <ProductCard  key={product.id} product={product} />
+          <ProductCard  key={product.id} product={product}  />
         ))}
         <Stack id='ListaProductos'></Stack>
       </SimpleGrid >

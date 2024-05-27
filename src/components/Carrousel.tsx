@@ -44,7 +44,8 @@ const ProductCard: React.FC<{ title: string; price: string; image: string }> = (
         p={6}
         maxW={'400px'}
         w={'full'}
-        bg={useColorModeValue('beige', 'gray.800')}
+        bg={useColorModeValue('#FFFFFF ', 'gray.800')}
+        
         boxShadow={'2xl'}
         rounded={'lg'}
         pos={'relative'}
@@ -62,7 +63,7 @@ const ProductCard: React.FC<{ title: string; price: string; image: string }> = (
             pos: 'absolute',
             top: 0,
             left: 0,
-            backgroundImage: `url(${image})`,
+            backgroundImage: `url(${image}) `,
             filter: 'blur(15px)',
             zIndex: -1,
           }}
@@ -81,10 +82,10 @@ const ProductCard: React.FC<{ title: string; price: string; image: string }> = (
           />
         </Box>
         <Stack pt={10} align={'center'}>
-          <Heading fontSize={'lg'} fontFamily={'body'} fontWeight={500} textAlign={'center'}>
+          <Heading fontSize={'lg'} fontFamily={'body'} fontWeight={500} textAlign={'center'} color={'#292864'}>
             {title}
           </Heading>
-          <Text fontWeight={800} fontSize={'xl'}>
+          <Text fontWeight={800} fontSize={'xl'}  color={'#292864'}>
             {price}
           </Text>
         </Stack>
@@ -95,9 +96,9 @@ const ProductCard: React.FC<{ title: string; price: string; image: string }> = (
 
 const ProductShowcase: React.FC = () => {
   return (
-    <Box bg="gray.500" py={10} mt={90}>
+    <Box bg="#fcf5eb" py={10} mt={90}>
       <Container maxW="container.xl">
-        <Heading as="h2" size="xl" color="WHITE" mb={6} textAlign="center">
+        <Heading as="h2" size="xl" color="#b592c3" mb={6} textAlign="center">
           TOURS DESTACADOS | TU OPORTUNIDAD DE CONOCER LO MEJOR 
         </Heading>
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
