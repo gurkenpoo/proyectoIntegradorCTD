@@ -55,7 +55,7 @@ export default function WithSubnavigation() {
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
           <Box maxW={{ base: '100px', md: '150px' }}>
-            <Image src='#' alt='logo' fit="fill" />
+            <Image src='./vinoMorado.png' alt='logo' fit="fill" />
           </Box>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
