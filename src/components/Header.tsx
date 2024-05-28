@@ -13,8 +13,9 @@ import {
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
+  useBreakpointValue,
   useDisclosure,
-  Image,
+  AbsoluteCenter,
 } from '@chakra-ui/react';
 import {
   HamburgerIcon,
@@ -22,7 +23,7 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons';
-import React from 'react';
+import { Image } from '@chakra-ui/next-js';
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
@@ -30,16 +31,16 @@ export default function WithSubnavigation() {
   return (
     <Box as="header" position="fixed" top="0" width="100%" zIndex={1000}>
       <Flex
-        bg={useColorModeValue('#FFFFFF', 'black')}
+        bg={useColorModeValue('white', 'gray.800')}
         color={useColorModeValue('gray.600', 'white')}
-        minH={'90px'}
+        minH={'60px'}
         py={{ base: 2 }}
         px={{ base: 4 }}
         borderBottom={1}
         borderStyle={'solid'}
-        borderColor={useColorModeValue('white', 'gray.900')}
+        borderColor={useColorModeValue('gray.200', 'gray.900')}
         align={'center'}
-        justify={'space-between'} // Añadido para la justificación del contenido
+        justify={'space-between'}
       >
         <Flex
           flex={{ base: 1, md: 'auto' }}
@@ -54,8 +55,8 @@ export default function WithSubnavigation() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-          <Box maxW={{ base: '100px', md: '150px' }}>
-            <Image src='./vinoMorado.png' alt='logo' fit="fill" />
+          <Box>
+            <Image src="/logoVino.png" width={160} height={140} alt="logo" />
           </Box>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
@@ -68,23 +69,22 @@ export default function WithSubnavigation() {
           justify={'flex-end'}
           direction={'row'}
           spacing={6}
-          display={{ base: 'none', md: 'flex' }} // Añadido para ocultar los botones en móvil
         >
           <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'#'}>
-            Sign In
+            Iniciar Sesión
           </Button>
           <Button
             as={'a'}
             fontSize={'sm'}
-            fontWeight={700}
-            color={'#FFFFFF'}
-            bg={'#b592c3'}
+            fontWeight={600}
+            color={'white'}
+            bg={'pink.400'}
             href={'#'}
             _hover={{
               bg: 'pink.300',
             }}
           >
-            Sign Up
+            Crear Sesión
           </Button>
         </Stack>
       </Flex>
@@ -113,7 +113,7 @@ const DesktopNav = () => {
                 href={navItem.href ?? '#'}
                 fontSize={'sm'}
                 fontWeight={500}
-                color={'#707070'}
+                color={linkColor}
                 _hover={{
                   textDecoration: 'none',
                   color: linkHoverColor,
@@ -252,12 +252,12 @@ interface NavItem {
 }
 
 const NAV_ITEMS: Array<NavItem> = [
-  {
-    label: 'Servicios',
-    href: '#',
-  },
-  {
-    label: 'Testimonios',
-    href: '#test',
-  },
+  // {
+  //   label: 'Servicios',
+  //   href: "#",
+  // },
+  // {
+  //   label: 'Testimonios',
+  //   href: "#test",
+  // }
 ];
