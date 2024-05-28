@@ -1,5 +1,5 @@
 import Products from "@/app/entities/products"
-import {ConnectionOptions, getConnectionManager } from "typeorm"
+import {DataSourceOptions, getConnectionManager } from "typeorm"
 import { getRepository } from "typeorm"
 
 async function startApp(){
@@ -16,9 +16,9 @@ async function startApp(){
             entities: [Products],
             synchronize: true,
             logging: true
-        } as ConnectionOptions);
+        } as DataSourceOptions);
         
-        await connection.connect();
+        await connection.initialize();
         console.log("TypeORM connectado");
 
         try {

@@ -11,6 +11,7 @@ import {
   SimpleGrid,
   Select,
   Link,
+  Input,
 } from '@chakra-ui/react';
 
 interface Product {
@@ -81,6 +82,8 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [searchText, setSearchText] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   useEffect(() => {
     const storedProducts = localStorage.getItem('products');
@@ -88,6 +91,7 @@ const ProductList: React.FC = () => {
       try {
         const parsedProducts: Product[] = JSON.parse(storedProducts);
         setProducts(parsedProducts);
+        setFilteredProducts(parsedProducts); // Mostrar todos los productos inicialmente
       } catch (error) {
         console.error('Error al parsear los productos:', error);
       }
@@ -95,53 +99,63 @@ const ProductList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (products.length > 0) {
-      const randomProducts = getRandomProducts(products);
-      setFilteredProducts(randomProducts);
-    }
-  }, [products]);
+    filterProducts();
+  }, [products, searchText, selectedCategory]);
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const category = event.target.value;
-    const filtered = category === '' ? products : products.filter(product => product.category === category);
-    const randomFilteredProducts = getRandomProducts(filtered);
-    setFilteredProducts(randomFilteredProducts);
+    setSelectedCategory(event.target.value);
   };
 
-  const getRandomProducts = (products: Product[]) => {
-    const shuffled = [...products].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, Math.min(shuffled.length, 10));
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value);
+  };
+
+  const filterProducts = () => {
+    let filtered = products;
+
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category === selectedCategory);
+    }
+
+    if (searchText) {
+      filtered = filtered.filter(product => product.name.toLowerCase().includes(searchText.toLowerCase()));
+    }
+
+    setFilteredProducts(filtered);
   };
 
   return (
-    <Box >
-      <Heading  as="h1" size="xl" mb={6} textAlign="center" mt={8} color={'#b592c3'} >
+    <Box>
+      <Heading as="h1" size="xl" mb={6} textAlign="center" mt={8} color={'#b592c3'}>
         Lista de Productos
       </Heading>
       <Center>
-        <Select
-          color={'#8D8D8D'}
-          placeholder='Filtrar por Categoria'
-          width={400}
-          textAlign="center"
-          onChange={handleCategoryChange
-          
-          }
-          mb={40}
-        >
-          <option value='Tour de Degustación Tradicional'>Tour de Degustación Tradicional</option>
-          <option value='Tour de Maridaje de Vinos y Comida'>Tour de Maridaje de Vinos y Comida</option>
-          <option value='Tour de Vendimia'>Tour de Vendimia</option>
-          <option value='Tour de Paisajes y Viñedos'>Tour de Paisajes y Viñedos</option>
-        </Select>
+        <Stack direction="row" spacing={4} mb={40}>
+          <Select
+            color={'#8D8D8D'}
+            placeholder='Filtrar por Categoria'
+            width={400}
+            textAlign="center"
+            onChange={handleCategoryChange}>
+            <option value='Tour de Degustación Tradicional'>Tour de Degustación Tradicional</option>
+            <option value='Tour de Maridaje de Vinos y Comida'>Tour de Maridaje de Vinos y Comida</option>
+            <option value='Tour de Vendimia'>Tour de Vendimia</option>
+            <option value='Tour de Paisajes y Viñedos'>Tour de Paisajes y Viñedos</option>
+          </Select>
+          <Input
+            placeholder="Buscar por nombre"
+            width={400}
+            value={searchText}
+            onChange={handleSearchChange}
+          />
+        </Stack>
       </Center>
-      
-      <SimpleGrid bgColor={"#c9bbde47"}  columns={2} spacing={4}>
+      <SimpleGrid bgColor={"#c9bbde47"} columns={2} spacing={4}>
         {filteredProducts.map(product => (
-          <ProductCard  key={product.id} product={product}  />
+          <ProductCard key={product.id} product={product} />
         ))}
         <Stack id='ListaProductos'></Stack>
-      </SimpleGrid >
+      </SimpleGrid>
     </Box>
   );
 };
