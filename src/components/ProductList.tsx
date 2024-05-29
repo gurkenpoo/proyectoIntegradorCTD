@@ -110,6 +110,14 @@ const ProductList: React.FC = () => {
     setSearchText(event.target.value);
   };
 
+  const shuffleArray = (array: any[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+
   const filterProducts = () => {
     let filtered = products;
 
@@ -121,7 +129,8 @@ const ProductList: React.FC = () => {
       filtered = filtered.filter(product => product.name.toLowerCase().includes(searchText.toLowerCase()));
     }
 
-    setFilteredProducts(filtered);
+    filtered = shuffleArray(filtered); // Mezclar los productos filtrados
+    setFilteredProducts(filtered.slice(0, 10)); // Limitar a 10 productos
   };
 
   return (
