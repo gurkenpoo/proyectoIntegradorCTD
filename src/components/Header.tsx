@@ -3,30 +3,30 @@
 import {
   Box,
   Flex,
-  Text,
-  IconButton,
+  // Text,
+  // IconButton,
   Button,
   Stack,
-  Collapse,
-  Icon,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
+  // Collapse,
+  // Icon,
+  // Popover,
+  // PopoverTrigger,
+  // PopoverContent,
   useColorModeValue,
-  useBreakpointValue,
+  // useBreakpointValue,
   useDisclosure,
-  AbsoluteCenter,
+  // AbsoluteCenter,
 } from '@chakra-ui/react';
-import {
-  HamburgerIcon,
-  CloseIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-} from '@chakra-ui/icons';
+// import {
+//   HamburgerIcon,
+//   CloseIcon,
+//   ChevronDownIcon,
+//   ChevronRightIcon,
+// } from '@chakra-ui/icons';
 import { Image, Link } from '@chakra-ui/next-js';
 
 export default function WithSubnavigation() {
-  const { isOpen, onToggle } = useDisclosure();
+  // const { isOpen, onToggle } = useDisclosure();
 
   return (
     <Box as="header" position="fixed" top="0" w="full" zIndex={1000}>

@@ -1,4 +1,4 @@
-import Products from "@/app/entities/products"
+import Products from "@/app/entities/Products"
 import {DataSourceOptions, getConnectionManager } from "typeorm"
 import { getRepository } from "typeorm"
 
