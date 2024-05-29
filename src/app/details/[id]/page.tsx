@@ -61,7 +61,7 @@ interface Product {
 
  if (loading) {
   return (
-    <Container maxW={'7xl'}>
+    <Container maxW={'7xl'} >
       <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, md: 10 }} py={{ base: 18, md: 24 }}>
         <Flex>
           <Box
@@ -120,7 +120,7 @@ interface Product {
   }
 
   return (
-    <><Header /><Container maxW={'7xl'}>
+    <><Header /><Container maxW={'7xl'} mt={120}>
           <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, md: 10 }} py={{ base: 18, md: 24 }}>
              <Stack spacing={4}>
               {product.imageUrls.map((imageUrl, index) => (
