@@ -46,23 +46,23 @@ export default function SignupCard() {
             <HStack>
               <Box>
                 <FormControl id="firstName" isRequired>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel>Nombre/s</FormLabel>
                   <Input type="text" />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl id="lastName">
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel>Apellido/s</FormLabel>
                   <Input type="text" />
                 </FormControl>
               </Box>
             </HStack>
             <FormControl id="email" isRequired>
-              <FormLabel>Email address</FormLabel>
+              <FormLabel>correo electronico @</FormLabel>
               <Input type="email" />
             </FormControl>
             <FormControl id="password" isRequired>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Contraseña</FormLabel>
               <InputGroup>
                 <Input type={showPassword ? 'text' : 'password'} />
                 <InputRightElement h={'full'}>
@@ -83,12 +83,12 @@ export default function SignupCard() {
                 _hover={{
                   bg: 'blue.500',
                 }}>
-                Sign up
+                Crear Cuenta
               </Button>
             </Stack>
             <Stack pt={6}>
               <Text align={'center'}>
-                Already a user? <Link color={'blue.400'}>Login</Link>
+                Ya eres Usuario? <Link color={'blue.400'} href='/login/signIn'>Iniciar Sesion</Link>
               </Text>
             </Stack>
           </Stack>
