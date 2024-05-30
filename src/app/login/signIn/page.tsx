@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react';
 import {
   Button,
   Checkbox,
@@ -11,9 +12,38 @@ import {
   Input,
   Stack,
   Image,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 
 export default function SplitScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, contrasena: password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Guarda el token en el almacenamiento local o maneja el inicio de sesión exitoso
+        localStorage.setItem('token', data.token);
+        // Redireccionar al usuario o hacer otra acción
+      } else {
+        setError(data.error || 'Error al iniciar sesión');
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      setError('Error al iniciar sesión');
+    }
+  };
+
   return (
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
       <Flex p={8} flex={1} align={'center'} justify={'center'}>
@@ -21,12 +51,13 @@ export default function SplitScreen() {
           <Heading fontSize={'2xl'}>Iniciar Sesion</Heading>
           <FormControl id="email">
             <FormLabel>Correo Electronico @</FormLabel>
-            <Input type="email" />
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </FormControl>
           <FormControl id="password">
             <FormLabel>Contraseña</FormLabel>
-            <Input type="password" />
+            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </FormControl>
+          {error && <Text color="red.500">{error}</Text>}
           <Stack spacing={6}>
             <Stack
               direction={{ base: 'column', sm: 'row' }}
@@ -35,7 +66,7 @@ export default function SplitScreen() {
               <Checkbox>Recuerdame</Checkbox>
               <Text color={'blue.500'}>Olvidaste la Contraseña?</Text>
             </Stack>
-            <Button colorScheme={'blackAlpha'} variant={'solid'} bg={'#292864 '}>
+            <Button colorScheme={'blackAlpha'} variant={'solid'} bg={'#292864 '} onClick={handleLogin}>
               Sign in
             </Button>
           </Stack>
@@ -51,5 +82,5 @@ export default function SplitScreen() {
         />
       </Flex>
     </Stack>
-  )
+  );
 }

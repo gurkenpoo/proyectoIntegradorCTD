@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { UsersDAO } from "../dao/Users.dao";
 import Users from "../entities/Users";
-import bcrypt from "bcrypt"; // Importa la librería bcrypt
+import bcrypt from "bcrypt";
 
 export class UsersService {
   private usersDAO: UsersDAO;
@@ -18,19 +18,19 @@ export class UsersService {
     return await this.usersDAO.findById(id);
   }
 
+  async getUserByEmail(email: string): Promise<Users | null> {
+    return await this.usersDAO.findByEmail(email);
+  }
+
   async createUser(userData: Omit<Users, "id">): Promise<Users> {
-    // 1. Hashea la contraseña
-    const saltRounds = 10; // Puedes ajustar el número de rondas (10 es un buen valor)
+    const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(userData.contrasena, saltRounds);
 
-    // 2. Crea el usuario con la contraseña hasheada
     const newUser = await this.usersDAO.create({
-      ...userData, // Copia los demás datos del usuario
-      contrasena: hashedPassword, // Reemplaza la contraseña con el hash
+      ...userData,
+      contrasena: hashedPassword,
     });
 
     return newUser;
   }
-
-  // ... otros métodos del servicio (updateUser, deleteUser, etc.)
 }
