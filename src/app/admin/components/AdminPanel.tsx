@@ -94,8 +94,7 @@ const AdminPanel: React.FC = () => {
       }
     }
 
-    const newProduct: Product = {
-      id: Date.now(), // Puedes usar otra lógica si lo prefieres
+    const newProduct: Omit<Product, "id"> = {
       name: productName,
       description: productDescription,
       imageUrls: imageUrlsBase64,

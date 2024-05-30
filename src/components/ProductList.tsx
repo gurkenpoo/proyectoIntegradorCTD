@@ -12,16 +12,10 @@ import {
   Select,
   Link,
   Input,
+  Skeleton,
 } from '@chakra-ui/react';
+import { Product } from '@/app/admin/types';
 
-interface Product {
-  id: number;
-  name: string;
-  originalPrice: number;
-  discountPrice: number;
-  imageUrls: string[];
-  category: string;
-}
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   return (
@@ -84,18 +78,23 @@ const ProductList: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-    const storedProducts = localStorage.getItem('products');
-    if (storedProducts) {
+    const fetchProducts = async () => {
       try {
-        const parsedProducts: Product[] = JSON.parse(storedProducts);
-        setProducts(parsedProducts);
-        setFilteredProducts(parsedProducts); // Mostrar todos los productos inicialmente
+        const response = await fetch('/api/products');
+        const data: Product[] = await response.json();
+        setProducts(data);
+        setFilteredProducts(data);
       } catch (error) {
-        console.error('Error al parsear los productos:', error);
+        console.error('Error al obtener los productos:', error);
+      } finally {
+        setLoading(false); 
       }
-    }
+    };
+
+    fetchProducts();
   }, []);
 
   useEffect(() => {
@@ -129,8 +128,8 @@ const ProductList: React.FC = () => {
       filtered = filtered.filter(product => product.name.toLowerCase().includes(searchText.toLowerCase()));
     }
 
-    filtered = shuffleArray(filtered); // Mezclar los productos filtrados
-    setFilteredProducts(filtered.slice(0, 10)); // Limitar a 10 productos
+    filtered = shuffleArray(filtered); 
+    setFilteredProducts(filtered.slice(0, 10));
   };
 
   return (
@@ -159,12 +158,20 @@ const ProductList: React.FC = () => {
           />
         </Stack>
       </Center>
-      <SimpleGrid bgColor={"#c9bbde47"} columns={2} spacing={4}>
-        {filteredProducts.map(product => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-        <Stack id='ListaProductos'></Stack>
-      </SimpleGrid>
+
+      {/* Renderizado condicional del skeleton loader o los productos */}
+      {loading ? (
+        <Center>
+          <Skeleton height="200px" width="80%" my="20px" /> 
+        </Center>
+      ) : (
+        <SimpleGrid bgColor={"#c9bbde47"} columns={2} spacing={4}>
+          {filteredProducts.map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+          <Stack id='ListaProductos'></Stack>
+        </SimpleGrid>
+      )}
     </Box>
   );
 };
