@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MdLocalShipping, MdCall } from 'react-icons/md';
+import { MdLocalShipping} from 'react-icons/md';
 import {
   Box,
   Container,

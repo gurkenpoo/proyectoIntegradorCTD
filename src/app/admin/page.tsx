@@ -11,7 +11,7 @@ function AdminPage() {
   return (
     <div>
         <Header />
-      <AdminPanel onAddProduct={handleAddProduct} />
+      <AdminPanel/>
     </div>
   );
 }

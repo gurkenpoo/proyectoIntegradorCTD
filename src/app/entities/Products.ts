@@ -1,35 +1,25 @@
-import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: "Products" })
-    export default class Products {
-    @PrimaryColumn()
-    id: number;
+@Entity()
+export default class Products {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({
-    unique: true,
-    nullable: false,})
-    name: string;
+  @Column({ unique: true, nullable: false })
+  name: string;
 
-    @Column("simple-array")
-    imageUrls: string[];
+  @Column("text", { array: true })
+  imageUrls: string[];
 
-    @Column({
-    unique: false,
-    nullable: false,})
-    description: string;
+  @Column({ nullable: false })
+  description: string;
 
-    @Column({
-    unique: false,
-    nullable: false,})
-    originalPrice: number;
+  @Column({ nullable: false })
+  originalPrice: number;
 
-    @Column({
-    unique: false,
-    nullable: true,})
-    discountPrice: number;
+  @Column({ nullable: true })
+  discountPrice: number;
 
-    @Column({
-    unique: false,
-    nullable: false,})
-    category: string;
+  @Column({ nullable: false })
+  category: string;
 }

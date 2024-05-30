@@ -27,11 +27,7 @@ interface Product {
   category: string;
 }
 
-interface Props {
-  onAddProduct: (newProduct: Product) => void;
-}
-
-const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
+const AdminPanel: React.FC = () => {
   const toast = useToast();
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
@@ -90,73 +86,64 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
       return;
     }
 
-    const storedProducts = localStorage.getItem('products');
-    const existingProducts: Product[] = storedProducts ? JSON.parse(storedProducts) : [];
-
-    // Calcular el newId de forma segura
-    const newId = existingProducts.length > 0
-      ? Math.max(...existingProducts.map(product => product.id || 0)) + 1
-      : 1;
-
-    const newProduct: Product = {
-      id: newId,
-      name: productName,
-      description: productDescription,
-      imageUrls: [],
-      originalPrice: isNaN(originalPriceValue) ? 0 : originalPriceValue,
-      discountPrice: isNaN(discountPriceValue) ? 0 : discountPriceValue,
-      category: categoryToUse,
-    };
-
+    const imageUrlsBase64: string[] = [];
     for (const file of imageFiles) {
       if (file) {
-        const imageUrl = await convertFileToUrl(file);
-        newProduct.imageUrls.push(imageUrl);
+        const imageUrlBase64 = await convertFileToUrl(file);
+        imageUrlsBase64.push(imageUrlBase64);
       }
     }
 
-    if (newProduct.imageUrls.length === 0) {
-      setErrorMessage('Debes agregar al menos una imagen');
-      return;
+    const newProduct: Product = {
+      id: Date.now(), // Puedes usar otra lógica si lo prefieres
+      name: productName,
+      description: productDescription,
+      imageUrls: imageUrlsBase64,
+      originalPrice: originalPriceValue,
+      discountPrice: discountPriceValue,
+      category: categoryToUse,
+    };
+
+    try {
+      console.log(newProduct)
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProduct),
+      });
+
+      if (response.ok) {
+        console.log('Producto creado con éxito');
+        // Puedes agregar aquí la lógica para mostrar un toast de éxito
+
+        // Limpiar los campos del formulario
+        setProductName('');
+        setProductDescription('');
+        setImageFiles([]);
+        setOriginalPrice('');
+        setDiscountPrice('');
+        setSelectedCategory('');
+        setNewCategory('');
+        setErrorMessage('');
+      } else {
+        console.error('Error al crear el producto:', response.status);
+        // Puedes agregar aquí la lógica para mostrar un toast de error
+      }
+    } catch (error) {
+      console.error('Error en la solicitud fetch:', error);
+      // Puedes agregar aquí la lógica para mostrar un toast de error
     }
-
-    const productExists = existingProducts.some(product => product.name === newProduct.name);
-
-    if (productExists) {
-      setErrorMessage('Un producto con este nombre ya existe.');
-      return;
-    }
-
-    onAddProduct(newProduct);
-
-    const updatedProducts = [...existingProducts, newProduct];
-    localStorage.setItem('products', JSON.stringify(updatedProducts));
-
-    setProductName('');
-    setProductDescription('');
-    setImageFiles([]);
-    setOriginalPrice('');
-    setDiscountPrice('');
-    setSelectedCategory('');
-    setNewCategory('');
-    setErrorMessage('');
-
-    // Mostrar el toast solo si no hay errores
-    toast({
-      title: 'Agregado',
-      description: 'El Tour/Producto fue agregado correctamente',
-      status: 'success',
-      duration: 3000, // Cambia la duración según tus necesidades
-      isClosable: true,
-    });
   };
 
   const handleAddCategory = () => {
-    if (newCategory.trim() && !categories.includes(newCategory)) {
-      setCategories([...categories, newCategory]);
-      setSelectedCategory(newCategory);
-      setNewCategory('');
-    }
+// ... dentro de handleAddProduct ...
+
+// Asegúrate de que categoryToUse no sea una cadena vacía
+const categoryToUse = newCategory.trim() !== '' ? newCategory : selectedCategory.trim() !== '' ? selectedCategory : 'Sin categoría'; // O un valor por defecto apropiado
+
+// ... resto del código de handleAddProduct ... 
   };
 
   const bgColor = useColorModeValue('gray.100', 'gray.700');
@@ -166,6 +153,7 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
       <Stack spacing={4}>
         <Heading fontSize="xl" mb={4}>Panel de Administracion</Heading>
 
+        
         {errorMessage && (
           <Text color="red.500" textAlign="center">
             {errorMessage}
@@ -257,11 +245,9 @@ const AdminPanel: React.FC<Props> = ({ onAddProduct }) => {
         </FormControl>
 
         <Center>
-          <Button 
-            colorScheme="teal" 
-            onClick={() => {
-              handleAddProduct();
-            }}
+          <Button
+            colorScheme="teal"
+            onClick={handleAddProduct}
           >
             Agregar Producto
           </Button>
