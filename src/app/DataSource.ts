@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
-import Products from "../app/entities/Products"; // Ajusta la ruta si es necesario
+import Products from "./entities/Products";
+import Users from "./entities/Users";
 
 let dataSource: DataSource | null = null;
 
@@ -12,7 +13,7 @@ export const initializeDataSource = async () => {
       username: "akatosh",
       password: "tierra",
       database: "carmenere",
-      entities: [Products],
+      entities: [Products, Users],
       synchronize: true, // ¡Cuidado en producción!
       logging: true,
     });
