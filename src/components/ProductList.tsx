@@ -159,7 +159,7 @@ const ProductList: React.FC = () => {
         </Stack>
       </Center>
 
-      {/* Renderizado condicional del skeleton loader o los productos */}
+      
       {loading ? (
         <Center>
           <Skeleton height="200px" width="80%" my="20px" /> 
