@@ -75,10 +75,10 @@ export default function WithSubnavigation() {
             fontSize={'sm'}
             fontWeight={600}
             color={'white'}
-            bg={'pink.400'}
+            bg={'#b592c3'}
             href={'/login/signUp'}
             _hover={{
-              bg: 'pink.300',
+              bg: '#292864',
             }}
           >
             Crear Sesión

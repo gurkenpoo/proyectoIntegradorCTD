@@ -189,10 +189,11 @@ const categoryToUse = newCategory.trim() !== '' ? newCategory : selectedCategory
             />
           ))}
           <IconButton
+          bg={'#b592c3'}
             aria-label="Agregar Imagen"
             icon={<AddIcon />}
             onClick={addImageField}
-            colorScheme="teal"
+            colorScheme='blackAlpha'
             mb={2}
           />
         </FormControl>
@@ -218,7 +219,7 @@ const categoryToUse = newCategory.trim() !== '' ? newCategory : selectedCategory
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
           />
-          <Button mt={2} onClick={handleAddCategory} colorScheme="teal">
+          <Button mt={2} onClick={handleAddCategory} colorScheme='blackAlpha' bg={'#b592c3'}>
             Agregar Categoría
           </Button>
         </FormControl>
@@ -245,7 +246,8 @@ const categoryToUse = newCategory.trim() !== '' ? newCategory : selectedCategory
 
         <Center>
           <Button
-            colorScheme="teal"
+            colorScheme='blackAlpha'
+            bg={'#b592c3'}
             onClick={handleAddProduct}
           >
             Agregar Producto

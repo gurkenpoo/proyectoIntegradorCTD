@@ -35,7 +35,7 @@ export default function SplitScreen() {
               <Checkbox>Recuerdame</Checkbox>
               <Text color={'blue.500'}>Olvidaste la Contraseña?</Text>
             </Stack>
-            <Button colorScheme={'blue'} variant={'solid'}>
+            <Button colorScheme={'blackAlpha'} variant={'solid'} bg={'#292864 '}>
               Sign in
             </Button>
           </Stack>
