@@ -12,12 +12,16 @@ import {
   Input,
   Stack,
   Image,
+  Link,
 } from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/navigation';
 
 export default function SplitScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter(); // Agrega useRouter
 
   const handleLogin = async () => {
     try {
@@ -32,9 +36,9 @@ export default function SplitScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        // Guarda el token en el almacenamiento local o maneja el inicio de sesión exitoso
+        // Guarda el token en el almacenamiento local
         localStorage.setItem('token', data.token);
-        // Redireccionar al usuario o hacer otra acción
+        router.push('/profile'); // Redirige a /profile
       } else {
         setError(data.error || 'Error al iniciar sesión');
       }
@@ -69,6 +73,9 @@ export default function SplitScreen() {
             <Button colorScheme={'blackAlpha'} variant={'solid'} bg={'#292864 '} onClick={handleLogin}>
               Sign in
             </Button>
+            <Button as={Link} href='/#ListaProductos' leftIcon={<ArrowBackIcon />} colorScheme='pink' variant='solid'>
+              Volver
+            </Button>
           </Stack>
         </Stack>
       </Flex>
@@ -81,6 +88,7 @@ export default function SplitScreen() {
           }
         />
       </Flex>
+
     </Stack>
   );
 }

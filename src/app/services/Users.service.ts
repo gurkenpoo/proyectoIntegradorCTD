@@ -33,4 +33,7 @@ export class UsersService {
 
     return newUser;
   }
+  async getUserProfile(id: number): Promise<Users | null> {
+    return await this.usersDAO.findById(id);
+  }
 }

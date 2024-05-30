@@ -18,7 +18,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 export default function SignupCard() {
   const toast = useToast();
@@ -102,19 +102,19 @@ export default function SignupCard() {
               <Box>
                 <FormControl id="nombre" isRequired>
                   <FormLabel>Nombre/s</FormLabel>
-                  <Input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                  <Input placeholder='Juan' type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl id="apellido">
                   <FormLabel>Apellido/s</FormLabel>
-                  <Input type="text" value={apellido} onChange={(e) => setApellido(e.target.value)} />
+                  <Input placeholder='Perez' type="text" value={apellido} onChange={(e) => setApellido(e.target.value)} />
                 </FormControl>
               </Box>
             </HStack>
             <FormControl id="email" isRequired>
-              <FormLabel>correo electronico @</FormLabel>
-              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <FormLabel>Correo electronico @</FormLabel>
+              <Input placeholder='correo@email.org' type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </FormControl>
             <FormControl id="contrasena" isRequired>
               <FormLabel>Contraseña</FormLabel>
@@ -141,6 +141,9 @@ export default function SignupCard() {
                 onClick={handleSubmit} // <-- onClick en el botón
               >
                 Crear Cuenta
+              </Button>
+              <Button as={Link} href='/#ListaProductos' leftIcon={<ArrowBackIcon />} colorScheme='pink' variant='solid'>
+                Volver
               </Button>
             </Stack>
             <Stack pt={6}>
