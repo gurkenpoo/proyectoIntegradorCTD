@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Button,
@@ -8,16 +8,51 @@ import {
   Heading,
   Input,
   Stack,
-  useColorModeValue,
   HStack,
+  useColorModeValue,
   Avatar,
-  AvatarBadge,
-  IconButton,
   Center,
-} from '@chakra-ui/react'
-import { SmallCloseIcon } from '@chakra-ui/icons'
+  Link,
+} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { UserInt } from '@/interfaces/UserInt';
+import { useRouter } from 'next/navigation';  // Importa useRouter
+import { ArrowBackIcon } from '@chakra-ui/icons';
 
 export default function UserProfileEdit() {
+  const [user, setUser] = useState<UserInt | null>(null);
+  const router = useRouter();  // Inicializa useRouter
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No token found');
+          router.push('/login/signIn');  // Redirige al usuario si no hay token
+          return;
+        }
+
+        const response = await fetch('/api/users/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const userData: UserInt = await response.json();
+          console.log('User data:', userData);
+          setUser(userData);
+        } else {
+          console.error('Error fetching user profile:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, [router]);  // Asegúrate de incluir router en las dependencias
+
   return (
     <Flex
       minH={'100vh'}
@@ -36,41 +71,45 @@ export default function UserProfileEdit() {
         <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
           User Profile Edit
         </Heading>
-        <FormControl id="userName">
+        <FormControl id="userIcon">
           <FormLabel>User Icon</FormLabel>
-          <Stack direction={['column', 'row']} spacing={6}>
-            <Center>
-              <Avatar size="xl" src="https://bit.ly/sage-adebayo">
-                <AvatarBadge
-                  as={IconButton}
-                  size="sm"
-                  rounded="full"
-                  top="-10px"
-                  colorScheme="red"
-                  aria-label="remove Image"
-                  icon={<SmallCloseIcon />}
-                />
-              </Avatar>
-            </Center>
-            <Center w="full">
-              <Button w="full">Change Icon</Button>
-            </Center>
-          </Stack>
+          <Center>
+            <Avatar
+              name={user ? `${user.nombre} ${user.apellido}` : 'User'}
+              size="xl"
+            />
+          </Center>
         </FormControl>
-        <FormControl id="userName" isRequired>
-          <FormLabel>User name</FormLabel>
-          <Input
-            placeholder="UserName"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-          />
-        </FormControl>
+        <HStack spacing={4}>
+          <FormControl id="userName" isRequired>
+            <FormLabel>First name</FormLabel>
+            <Input
+              placeholder="First Name"
+              _placeholder={{ color: 'gray.500' }}
+              type="text"
+              value={user?.nombre ?? ''}
+              readOnly
+            />
+          </FormControl>
+          <FormControl id="userSurname" isRequired>
+            <FormLabel>Last name</FormLabel>
+            <Input
+              placeholder="Last Name"
+              _placeholder={{ color: 'gray.500' }}
+              type="text"
+              value={user?.apellido ?? ''}
+              readOnly
+            />
+          </FormControl>
+        </HStack>
         <FormControl id="email" isRequired>
           <FormLabel>Email address</FormLabel>
           <Input
             placeholder="your-email@example.com"
             _placeholder={{ color: 'gray.500' }}
             type="email"
+            value={user?.email ?? ''}
+            readOnly
           />
         </FormControl>
         <FormControl id="password" isRequired>
@@ -82,15 +121,9 @@ export default function UserProfileEdit() {
           />
         </FormControl>
         <Stack spacing={6} direction={['column', 'row']}>
-          <Button
-            bg={'red.400'}
-            color={'white'}
-            w="full"
-            _hover={{
-              bg: 'red.500',
-            }}>
-            Cancel
-          </Button>
+          <Button as={Link} href='/' leftIcon={<ArrowBackIcon />} colorScheme='pink' variant='solid'>
+              Volver
+            </Button>
           <Button
             bg={'blue.400'}
             color={'white'}
@@ -103,5 +136,5 @@ export default function UserProfileEdit() {
         </Stack>
       </Stack>
     </Flex>
-  )
+  );
 }

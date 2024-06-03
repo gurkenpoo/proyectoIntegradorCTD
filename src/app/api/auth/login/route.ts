@@ -3,7 +3,7 @@ import { UsersService } from "@/app/services/Users.service";
 import { initializeDataSource } from "@/app/DataSource";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import config from "./config.json"; // Importa el archivo JSON directamente
+import config from "./config.json";
 
 export async function POST(req: NextRequest) {
   try {
