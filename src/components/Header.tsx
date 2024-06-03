@@ -133,6 +133,7 @@ const Header = () => {
         isOpen={isDrawerOpen}
         placement='right'
         onClose={handleCloseDrawer}
+        size={"sm"}
       >
         <DrawerOverlay />
         <DrawerContent>
@@ -140,7 +141,7 @@ const Header = () => {
           <DrawerHeader>User Profile</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder='Type here...' />
+            <Input size={"sm"} placeholder='Type here...' />
             <Button mt={6} onClick={handleLogout} colorScheme='pink' variant='solid'>
                 Cerrar Sesión
               </Button>
