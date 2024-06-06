@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Center,
@@ -16,16 +16,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  imageUrls: string[];
-  originalPrice: number;
-  discountPrice: number;
-  category: string;
-}
+import { Product } from '../types';
 
 const AdminPanel: React.FC = () => {
   const toast = useToast();
@@ -34,15 +25,25 @@ const AdminPanel: React.FC = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [originalPrice, setOriginalPrice] = useState('');
   const [discountPrice, setDiscountPrice] = useState('');
-  const [categories, setCategories] = useState<string[]>([
-    'Tour de Degustación Tradicional',
-    'Tour de Maridaje de Vinos y Comida',
-    'Tour de Vendimia',
-    'Tour de Paisajes y Viñedos',
-  ]);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [categories, setCategories] = useState<string[]>([]); // State for categories
+  const [selectedCategory, setSelectedCategory] = useState(''); // State for selected category
   const [newCategory, setNewCategory] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Fetch categories from API on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/category');
+        const data: { name: string }[] = await response.json();
+        setCategories(data.map(category => category.name));
+      } catch (error) {
+        console.error('Error al obtener las categorías:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const convertFileToUrl = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -136,13 +137,47 @@ const AdminPanel: React.FC = () => {
     }
   };
 
-  const handleAddCategory = () => {
-// ... dentro de handleAddProduct ...
+  const handleAddCategory = async () => {
+    try {
+      const response = await fetch('/api/category', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newCategory }),
+      });
 
-// Asegúrate de que categoryToUse no sea una cadena vacía
-const categoryToUse = newCategory.trim() !== '' ? newCategory : selectedCategory.trim() !== '' ? selectedCategory : 'Sin categoría'; // O un valor por defecto apropiado
-
-// ... resto del código de handleAddProduct ... 
+      if (response.ok) {
+        const data = await response.json();
+        setCategories([...categories, data.category.name]);
+        setNewCategory('');
+        toast({
+          title: 'Categoría agregada',
+          description: `Se ha agregado la categoría ${data.category.name}`,
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        console.error('Error al agregar la categoría:', response.status);
+        toast({
+          title: 'Error al agregar categoría',
+          description: 'Ha ocurrido un error al agregar la categoría.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error('Error al agregar la categoría:', error);
+      toast({
+        title: 'Error al agregar categoría',
+        description: 'Ha ocurrido un error al agregar la categoría.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const bgColor = useColorModeValue('gray.100', 'gray.700');
@@ -152,7 +187,6 @@ const categoryToUse = newCategory.trim() !== '' ? newCategory : selectedCategory
       <Stack spacing={4}>
         <Heading fontSize="xl" mb={4}>Panel de Administracion</Heading>
 
-        
         {errorMessage && (
           <Text color="red.500" textAlign="center">
             {errorMessage}
@@ -189,7 +223,7 @@ const categoryToUse = newCategory.trim() !== '' ? newCategory : selectedCategory
             />
           ))}
           <IconButton
-          bg={'#b592c3'}
+            bg={'#b592c3'}
             aria-label="Agregar Imagen"
             icon={<AddIcon />}
             onClick={addImageField}
@@ -211,8 +245,11 @@ const categoryToUse = newCategory.trim() !== '' ? newCategory : selectedCategory
               </option>
             ))}
           </Select>
+        </FormControl>
+
+        <FormControl isRequired>
           <FormLabel htmlFor="newCategory" mt={4}>Agregar Nueva Categoría:</FormLabel>
-                    <Input
+          <Input
             type="text"
             id="newCategory"
             placeholder="Nueva categoría"

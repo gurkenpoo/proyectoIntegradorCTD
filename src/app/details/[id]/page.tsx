@@ -213,7 +213,7 @@ function Page({ params }: { params: { id: string } }) {
                 transform: 'translateY(2px)',
                 boxShadow: 'lg',
               }}>
-              Agregar al Carrito
+              Reservar ahora
             </Button>
 
             <Stack direction="row" alignItems="center" justifyContent={'center'}>

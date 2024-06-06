@@ -16,7 +16,6 @@ import {
 } from '@chakra-ui/react';
 import { Product } from '@/app/admin/types';
 
-
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   return (
     <Box
@@ -25,7 +24,8 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       _hover={{
         textDecoration: 'none',
       }}
-      cursor="pointer">
+      cursor="pointer"
+    >
       <Center py={12}>
         <Box
           role={'group'}
@@ -36,7 +36,8 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
           boxShadow={'2xl'}
           rounded={'lg'}
           pos={'relative'}
-          zIndex={1}>
+          zIndex={1}
+        >
           <Stack spacing={4}>
             {product.imageUrls.length > 0 && (
               <Box>
@@ -78,7 +79,8 @@ const ProductList: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [loading, setLoading] = useState(true); 
+  const [categories, setCategories] = useState<string[]>([]); // State for categories
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -90,11 +92,22 @@ const ProductList: React.FC = () => {
       } catch (error) {
         console.error('Error al obtener los productos:', error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/category');
+        const data: { name: string }[] = await response.json();
+        setCategories(data.map(category => category.name));
+      } catch (error) {
+        console.error('Error al obtener las categorías:', error);
       }
     };
 
     fetchProducts();
+    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -128,7 +141,7 @@ const ProductList: React.FC = () => {
       filtered = filtered.filter(product => product.name.toLowerCase().includes(searchText.toLowerCase()));
     }
 
-    filtered = shuffleArray(filtered); 
+    filtered = shuffleArray(filtered);
     setFilteredProducts(filtered.slice(0, 10));
   };
 
@@ -144,11 +157,13 @@ const ProductList: React.FC = () => {
             placeholder='Filtrar por Categoria'
             width={400}
             textAlign="center"
-            onChange={handleCategoryChange}>
-            <option value='Tour de Degustación Tradicional'>Tour de Degustación Tradicional</option>
-            <option value='Tour de Maridaje de Vinos y Comida'>Tour de Maridaje de Vinos y Comida</option>
-            <option value='Tour de Vendimia'>Tour de Vendimia</option>
-            <option value='Tour de Paisajes y Viñedos'>Tour de Paisajes y Viñedos</option>
+            onChange={handleCategoryChange}
+          >
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
           </Select>
           <Input
             placeholder="Buscar por nombre"
@@ -159,10 +174,9 @@ const ProductList: React.FC = () => {
         </Stack>
       </Center>
 
-      
       {loading ? (
         <Center>
-          <Skeleton height="200px" width="80%" my="20px" /> 
+          <Skeleton height="200px" width="80%" my="20px" />
         </Center>
       ) : (
         <SimpleGrid bgColor={"#c9bbde47"} columns={2} spacing={4}>
