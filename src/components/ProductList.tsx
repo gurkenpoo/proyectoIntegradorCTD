@@ -79,23 +79,11 @@ const ProductList: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [categories, setCategories] = useState<string[]>([]); // State for categories
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<string[]>([]); 
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/products');
-        const data: Product[] = await response.json();
-        setProducts(data);
-        setFilteredProducts(data);
-      } catch (error) {
-        console.error('Error al obtener los productos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     const fetchCategories = async () => {
       try {
         const response = await fetch('/api/category');
@@ -103,12 +91,32 @@ const ProductList: React.FC = () => {
         setCategories(data.map(category => category.name));
       } catch (error) {
         console.error('Error al obtener las categorías:', error);
+      } finally {
+        setLoadingCategories(false);
       }
     };
 
-    fetchProducts();
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if (!loadingCategories) {
+      const fetchProducts = async () => {
+        try {
+          const response = await fetch('/api/products');
+          const data: Product[] = await response.json();
+          setProducts(data);
+          setFilteredProducts(data);
+        } catch (error) {
+          console.error('Error al obtener los productos:', error);
+        } finally {
+          setLoadingProducts(false);
+        }
+      };
+
+      fetchProducts();
+    }
+  }, [loadingCategories]); 
 
   useEffect(() => {
     filterProducts();
@@ -174,7 +182,7 @@ const ProductList: React.FC = () => {
         </Stack>
       </Center>
 
-      {loading ? (
+      {(loadingProducts || loadingCategories) ? ( 
         <Center>
           <Skeleton height="200px" width="80%" my="20px" />
         </Center>

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ProductsService } from "@/app/services/Products.service";
 import Products from "@/app/entities/Products";
-import { initializeDataSource } from "@/app/DataSource";
+import { getDataSource } from "@/app/DataSource"; // Importa getDataSource
 
 export const POST = async (req: NextRequest) => {
   try {
-    const dataSource = await initializeDataSource();
+    const dataSource = await getDataSource();
     const productData: Omit<Products, "id"> = await req.json();
     const productsService = new ProductsService(dataSource);
     const newProduct = await productsService.createProduct(productData);
@@ -29,7 +29,7 @@ export const POST = async (req: NextRequest) => {
 
 export const GET = async () => {
   try {
-    const dataSource = await initializeDataSource();
+    const dataSource = await getDataSource();
     const productsService = new ProductsService(dataSource);
     const products = await productsService.getAllProducts();
     return NextResponse.json(products);
@@ -44,23 +44,20 @@ export const GET = async () => {
 
 export const PUT = async (req: NextRequest) => {
   try {
-    const dataSource = await initializeDataSource();
+    const dataSource = await getDataSource();
     const productData: Products = await req.json();
     const productsService = new ProductsService(dataSource);
 
     let updatedProduct: Products | null = null;
 
-    // Verificar si la URL contiene un ID de producto
-    const productId = req.nextUrl.pathname.split("/").pop(); // Obtener el último segmento de la URL
+    const productId = req.nextUrl.pathname.split("/").pop();
 
     if (productId && !isNaN(Number(productId))) {
-      // Si hay un ID numérico en la URL, actualizar por ID
       updatedProduct = await productsService.updateProduct(
         Number(productId),
         productData
       );
     } else {
-      // Si no hay ID en la URL, asumir que se debe actualizar por nombre
       const productToUpdate = await productsService.getProductByName(
         productData.name
       );
@@ -83,7 +80,6 @@ export const PUT = async (req: NextRequest) => {
         }
       );
     } else {
-      // Manejar el caso donde no se encuentra el producto
       return NextResponse.json(
         { error: "No se encontró el producto a actualizar" },
         { status: 404 }

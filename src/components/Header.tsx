@@ -2,15 +2,14 @@
 import { Box, Button, Flex, Stack, useColorModeValue, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, Input } from '@chakra-ui/react';
 import { Image, Link } from '@chakra-ui/next-js';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Importa useRouter
+import { useRouter } from 'next/navigation'; 
 import { Avatar } from '@chakra-ui/react';
-import { UserInt } from '@/interfaces/UserInt'; // Importa la interfaz UserInt
-
+import { UserInt } from '@/interfaces/UserInt'; 
 
 const Header = () => {
-  const [user, setUser] = useState<UserInt | null>(null); // Usa UserInt para tipar user
-  const router = useRouter(); // Inicializa useRouter
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Estado para controlar si el Drawer está abierto
+  const [user, setUser] = useState<UserInt | null>(null);
+  const router = useRouter(); 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -18,7 +17,6 @@ const Header = () => {
         const token = localStorage.getItem('token');
         if (!token) {
           console.error('No token found');
-          // router.push('/login/signIn'); // Redirige al usuario si no hay token
           return;
         }
 
@@ -28,8 +26,7 @@ const Header = () => {
           },
         });
         if (response.ok) {
-          const userData: UserInt = await response.json(); // Usa UserInt para tipar userData
-          console.log('User data:', userData);
+          const userData: UserInt = await response.json(); 
           setUser(userData);
         } else {
           console.error('Error fetching user profile:', response.statusText);
@@ -40,22 +37,19 @@ const Header = () => {
     };
 
     fetchUserProfile();
-  }, [router]); // Asegúrate de incluir router en las dependencias
+  }, [router]); 
 
-  // Función para abrir el Drawer
   const handleOpenDrawer = () => {
     setIsDrawerOpen(true);
   };
 
-  // Función para cerrar el Drawer
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
   };
 
-  // Función para cerrar sesión
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Elimina el token del localStorage
-    router.push("/login/signIn"); // Redirige al home
+    localStorage.removeItem('token'); 
+    router.push("/login/signIn"); 
   };
 
   return (
@@ -86,9 +80,6 @@ const Header = () => {
                 <Image src="/logoVino.png" width={160} height={140} alt="logo" />
               </Link>
             </Box>
-            <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-              {/* <DesktopNav /> */}
-            </Flex>
           </Flex>
 
           <Stack
@@ -98,9 +89,8 @@ const Header = () => {
             spacing={6}
           >
             {user ? (
-              // Avatar que abre el Drawer al hacer clic
               <Box onClick={handleOpenDrawer} cursor="pointer">
-                <AvatarWithInitials user={user} />
+                <Avatar name={user ? `${user.nombre} ${user.apellido}` : 'User'} size="md" /> 
               </Box>
             ) : (
               <>
@@ -122,14 +112,11 @@ const Header = () => {
                 </Button>
               </>
             )}
-
-            {/* Botón de Cerrar Sesión */}
           </Stack>
         </Flex>
       </Box>
 
-      {/* Drawer */}
-      <Drawer
+      <Drawer 
         isOpen={isDrawerOpen}
         placement='right'
         onClose={handleCloseDrawer}
@@ -141,33 +128,20 @@ const Header = () => {
           <DrawerHeader>User Profile</DrawerHeader>
 
           <DrawerBody>
-            <Input size={"sm"} placeholder='Type here...' />
+            {/* Contenido del Drawer */}
             <Button mt={6} onClick={handleLogout} colorScheme='pink' variant='solid'>
-                Cerrar Sesión
-              </Button>
+              Cerrar Sesión
+            </Button>
           </DrawerBody>
 
           <DrawerFooter>
             <Button variant='outline' mr={3} onClick={handleCloseDrawer}>
-              Cancel
+              Cancelar
             </Button>
-                          
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
-  );
-};
-
-interface AvatarWithInitialsProps {
-  user: UserInt | null;
-}
-
-const AvatarWithInitials = ({ user }: AvatarWithInitialsProps) => {
-  const initials = user ? `${user.nombre.charAt(0)}${user.apellido.charAt(0)}` : 'U';
-
-  return (
-    <Avatar name={initials} />
   );
 };
 

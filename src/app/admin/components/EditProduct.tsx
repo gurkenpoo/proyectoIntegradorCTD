@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -16,6 +17,7 @@ import {
   useToast,
   SimpleGrid,
   Image,
+  Skeleton,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { Product } from '../types';
@@ -33,6 +35,8 @@ const EditProduct: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<string>('');
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [loadingProducts, setLoadingProducts] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -42,6 +46,8 @@ const EditProduct: React.FC = () => {
         setCategories(data.map((category) => category.name));
       } catch (error) {
         console.error('Error al obtener las categorías:', error);
+      } finally {
+        setLoadingCategories(false);
       }
     };
 
@@ -49,18 +55,22 @@ const EditProduct: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/products');
-        const data: Product[] = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error('Error al obtener los productos:', error);
-      }
-    };
+    if (!loadingCategories) {
+      const fetchProducts = async () => {
+        try {
+          const response = await fetch('/api/products');
+          const data: Product[] = await response.json();
+          setProducts(data);
+        } catch (error) {
+          console.error('Error al obtener los productos:', error);
+        } finally {
+          setLoadingProducts(false);
+        }
+      };
 
-    fetchProducts();
-  }, []);
+      fetchProducts();
+    }
+  }, [loadingCategories]);
 
   useEffect(() => {
     const foundProduct = products.find((p) => p.name === selectedProduct);
@@ -201,126 +211,135 @@ const EditProduct: React.FC = () => {
           Editar Producto
         </Heading>
 
-        {/* Dropdown para seleccionar producto */}
-        <FormControl isRequired>
-          <FormLabel htmlFor="selectProduct">Seleccionar Producto:</FormLabel>
-          <Select
-            id="selectProduct"
-            placeholder="Seleccionar producto"
-            value={selectedProduct}
-            onChange={handleProductChange}
-          >
-            {products.map((product) => (
-              <option key={product.id} value={product.name}>
-                {product.name}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Formulario de edición (visible si se selecciona un producto) */}
-        {product && (
+        {/* Mostrar un Skeleton mientras se cargan categorías o productos */}
+        {(loadingCategories || loadingProducts) ? (
+          <Center>
+            <Skeleton height="200px" width="80%" my="20px" />
+          </Center>
+        ) : (
           <>
-            {errorMessage && (
-              <Text color="red.500" textAlign="center">
-                {errorMessage}
-              </Text>
-            )}
+            {/* Dropdown para seleccionar producto */}
             <FormControl isRequired>
-              <FormLabel htmlFor="productName">Nombre del Producto:</FormLabel>
-              <Input
-                type="text"
-                id="productName"
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl isRequired>
-              <FormLabel htmlFor="productDescription">
-                Descripción del Producto:
-              </FormLabel>
-              <Textarea
-                id="productDescription"
-                value={productDescription}
-                onChange={(e) => setProductDescription(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl isRequired>
-              <FormLabel>Imágenes del Producto:</FormLabel>
-              {/* Mostrar las imágenes actuales del producto */}
-              <SimpleGrid columns={3} spacing={4}>
-                {product?.imageUrls.map((imageUrl, index) => (
-                  <Box key={index}>
-                    <Image src={imageUrl} alt="Product Image" />
-                  </Box>
-                ))}
-              </SimpleGrid>
-
-              {/* Campos para agregar nuevas imágenes */}
-              {imageFiles.map((file, index) => (
-                <Input
-                  key={index}
-                  type="file"
-                  onChange={(e) => handleAddImage(e, index)}
-                  mb={2}
-                />
-              ))}
-              <IconButton
-                bg={'#b592c3'}
-                aria-label="Agregar Imagen"
-                icon={<AddIcon />}
-                onClick={addImageField}
-                colorScheme='blackAlpha'
-                mb={2}
-              />
-            </FormControl>
-
-            <FormControl isRequired>
-              <FormLabel htmlFor="category">Categoría:</FormLabel>
+              <FormLabel htmlFor="selectProduct">Seleccionar Producto:</FormLabel>
               <Select
-                placeholder="Seleccionar categoría"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+                id="selectProduct"
+                placeholder="Seleccionar producto"
+                value={selectedProduct}
+                onChange={handleProductChange}
               >
-                {categories.map((category, index) => (
-                  <option key={index} value={category}>
-                    {category}
+                {products.map((product) => (
+                  <option key={product.id} value={product.name}>
+                    {product.name}
                   </option>
                 ))}
               </Select>
             </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel htmlFor="originalPrice">Precio Original:</FormLabel>
-              <Input
-                type="number"
-                id="originalPrice"
-                value={originalPrice}
-                onChange={(e) => setOriginalPrice(e.target.value)}
-              />
-            </FormControl>
+            {/* Formulario de edición (visible si se selecciona un producto) */}
+            {product && (
+              <>
+                {errorMessage && (
+                  <Text color="red.500" textAlign="center">
+                    {errorMessage}
+                  </Text>
+                )}
+                <FormControl isRequired>
+                  <FormLabel htmlFor="productName">Nombre del Producto:</FormLabel>
+                  <Input
+                    type="text"
+                    id="productName"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                  />
+                </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel htmlFor="discountPrice">Precio con Descuento:</FormLabel>
-              <Input
-                type="number"
-                id="discountPrice"
-                value={discountPrice}
-                onChange={(e) => setDiscountPrice(e.target.value)}
-              />
-            </FormControl>
+                <FormControl isRequired>
+                  <FormLabel htmlFor="productDescription">
+                    Descripción del Producto:
+                  </FormLabel>
+                  <Textarea
+                    id="productDescription"
+                    value={productDescription}
+                    onChange={(e) => setProductDescription(e.target.value)}
+                  />
+                </FormControl>
 
-            <Center>
-              <Button
-                colorScheme='blackAlpha'
-                bg={'#b592c3'}
-                onClick={handleUpdateProduct}
-              >
-                Actualizar Producto
-              </Button>
-            </Center>
+                <FormControl isRequired>
+                  <FormLabel>Imágenes del Producto:</FormLabel>
+                  {/* Mostrar las imágenes actuales del producto */}
+                  <SimpleGrid columns={3} spacing={4}>
+                    {product?.imageUrls.map((imageUrl, index) => (
+                      <Box key={index}>
+                        <Image src={imageUrl} alt="Product Image" />
+                      </Box>
+                    ))}
+                  </SimpleGrid>
+
+                  {/* Campos para agregar nuevas imágenes */}
+                  {imageFiles.map((file, index) => (
+                    <Input
+                      key={index}
+                      type="file"
+                      onChange={(e) => handleAddImage(e, index)}
+                      mb={2}
+                    />
+                  ))}
+                  <IconButton
+                    bg={'#b592c3'}
+                    aria-label="Agregar Imagen"
+                    icon={<AddIcon />}
+                    onClick={addImageField}
+                    colorScheme='blackAlpha'
+                    mb={2}
+                  />
+                </FormControl>
+
+                <FormControl isRequired>
+                  <FormLabel htmlFor="category">Categoría:</FormLabel>
+                  <Select
+                    placeholder="Seleccionar categoría"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                  >
+                    {categories.map((category, index) => (
+                      <option key={index} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl isRequired>
+                  <FormLabel htmlFor="originalPrice">Precio Original:</FormLabel>
+                  <Input
+                    type="number"
+                    id="originalPrice"
+                    value={originalPrice}
+                    onChange={(e) => setOriginalPrice(e.target.value)}
+                  />
+                </FormControl>
+
+                <FormControl isRequired>
+                  <FormLabel htmlFor="discountPrice">Precio con Descuento:</FormLabel>
+                  <Input
+                    type="number"
+                    id="discountPrice"
+                    value={discountPrice}
+                    onChange={(e) => setDiscountPrice(e.target.value)}
+                  />
+                </FormControl>
+
+                <Center>
+                  <Button
+                    colorScheme='blackAlpha'
+                    bg={'#b592c3'}
+                    onClick={handleUpdateProduct}
+                  >
+                    Actualizar Producto
+                  </Button>
+                </Center>
+              </>
+            )}
           </>
         )}
       </Stack>

@@ -1,15 +1,14 @@
 import { DataSource } from "typeorm";
-import Products from "./entities/Products";
 import Users from "./entities/Users";
 import Category from "./entities/Category";
+import Products from "./entities/Products";
 
 // La instancia DataSource
-let dataSource: DataSource;
+let dataSource: DataSource | null = null; // Inicializar como null
 
 // Inicializa la fuente de datos
-export const initializeDataSource = async () => {
+export const initializeDataSource = async (): Promise<DataSource> => {
   if (!dataSource) {
-    // Solo inicializa si dataSource no está definido
     dataSource = new DataSource({
       type: "postgres",
       host: "localhost",
@@ -27,11 +26,17 @@ export const initializeDataSource = async () => {
       console.log("Conexión a la base de datos exitosa");
     } catch (error) {
       console.error("Error al conectar a la base de datos:", error);
-      throw error; // Re-lanza el error para que la aplicación lo maneje
+      throw error; // Re-lanza el error
     }
   }
 
+  // Asegurar que dataSource no sea null antes de retornarlo
   return dataSource;
 };
 
-export const getDataSource = () => dataSource; // No se necesita await aquí
+export const getDataSource = async (): Promise<DataSource> => {
+  if (!dataSource) {
+    return await initializeDataSource();
+  }
+  return dataSource;
+};
