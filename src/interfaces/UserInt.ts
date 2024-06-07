@@ -4,5 +4,5 @@ export interface UserInt {
   apellido: string;
   email: string;
   contrasena?: string;
-  tipo?: string;
+  tipo: string;
 }

@@ -1,15 +1,21 @@
-'use client'
-import { Box, Button, Flex, Stack, useColorModeValue, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, Input } from '@chakra-ui/react';
+'use client';
+import { 
+  Box, Button, Flex, Stack, useColorModeValue, 
+  Drawer, DrawerBody, DrawerFooter, DrawerHeader, 
+  DrawerOverlay, DrawerContent, DrawerCloseButton, Input 
+} from '@chakra-ui/react';
 import { Image, Link } from '@chakra-ui/next-js';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; 
 import { Avatar } from '@chakra-ui/react';
 import { UserInt } from '@/interfaces/UserInt'; 
+import { usePathname } from 'next/navigation'; 
 
 const Header = () => {
   const [user, setUser] = useState<UserInt | null>(null);
   const router = useRouter(); 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -38,6 +44,13 @@ const Header = () => {
 
     fetchUserProfile();
   }, [router]); 
+
+  useEffect(() => {
+    if ( user?.tipo === 'usuario' && pathname === '/admin') {
+      router.push('/');
+      console.log(user)
+    }
+  }, [user, pathname, router]); 
 
   const handleOpenDrawer = () => {
     setIsDrawerOpen(true);

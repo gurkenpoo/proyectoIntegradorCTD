@@ -3,18 +3,19 @@ import React, { useState, useEffect } from 'react';
 import AdminPanel from './components/AdminPanel';
 import Header from "@/components/Header";
 import EditProduct from './components/EditProduct';
-import NoMobile from './components/NoMobile'; // Import the NoMobile component
+import NoMobile from './components/NoMobile'; 
+import EditUser from './components/EditUser';
 
 function AdminPage() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
+      setIsMobile(window.innerWidth <= 768); 
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize(); // Initial check on load
+    handleResize(); 
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -27,6 +28,7 @@ function AdminPage() {
           <Header />
           <AdminPanel />
           <EditProduct />
+          <EditUser />
         </div>
       )}
     </div>
