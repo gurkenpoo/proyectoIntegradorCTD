@@ -24,6 +24,7 @@ import {
 } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import Header from '@/components/Header';
+import DatePicker from '@/components/DatePicker'; 
 
 interface Product {
   id: number;
@@ -47,10 +48,8 @@ function Page({ params }: { params: { id: string } }) {
         const response = await fetch('/api/products');
         const data: Product[] = await response.json();
         setProducts(data);
-
         const foundProduct = data.find(p => p.id === parseInt(id, 10));
         setProduct(foundProduct || null);
-
       } catch (error) {
         console.error('Error al obtener los productos:', error);
       } finally {
@@ -59,7 +58,7 @@ function Page({ params }: { params: { id: string } }) {
     };
 
     fetchProducts();
-  }, [id]); 
+  }, [id]);
 
   if (loading) {
     return (
@@ -199,6 +198,7 @@ function Page({ params }: { params: { id: string } }) {
                 </List>
               </Box>
             </Stack>
+            <DatePicker/>
 
             <Button
               rounded={'15'}

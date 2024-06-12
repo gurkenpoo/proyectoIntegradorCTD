@@ -1,0 +1,51 @@
+/* styles/datepicker.css */
+div.reserved {
+    background-color: #d3d3d3;
+    /* Gris para leyenda de días reservados */
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+div.in-service {
+    background-color: #cc0303;
+    /* Rojo para leyenda de días en servicio */
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.un-availble {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.un-availble p {
+    margin: 0;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+/* Estilo para días deshabilitados */
+.rmdp-day.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
