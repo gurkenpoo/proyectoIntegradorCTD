@@ -1,6 +1,6 @@
 /* styles/datepicker.css */
 div.reserved {
-    background-color: #d3d3d3;
+    background-color: #dfdfdf;
     /* Gris para leyenda de días reservados */
     width: 20px;
     height: 20px;
@@ -47,5 +47,9 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #353f4a;
+}
+.resetButton {
+    font-weight: 600;
+    background-color: #020101;
 }

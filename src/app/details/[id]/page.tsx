@@ -219,6 +219,7 @@ function Page({ params }: { params: { id: string } }) {
             <Stack direction="row" alignItems="center" justifyContent={'center'}>
               <MdLocalShipping />
               <Text> El correo de confirmacion llegara en unos minutos</Text>
+              <MdLocalShipping />
             </Stack>
             <Stack direction='row' spacing={4} justifyContent={'center'}>
               <Button as={Link} href='/#ListaProductos' leftIcon={<ArrowBackIcon />} colorScheme='pink' variant='solid'>
