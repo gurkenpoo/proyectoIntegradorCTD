@@ -15,7 +15,7 @@ function agregarReservas(){
   [new DateObject().setDay(17).format(), new DateObject().setDay(18).format()]] 
 }
 
-setTimeout(agregarReservas, 7000)
+setTimeout(agregarReservas, 8000)
 
 const inService: any[] = [
   // [new DateObject().setDay(21).format(), new DateObject().setDay(22).format()],

@@ -23,6 +23,9 @@ const Header = () => {
         const token = localStorage.getItem('token');
         if (!token) {
           console.error('No token found');
+          if (pathname === '/admin') {
+            router.push('/');
+          }
           return;
         }
 
@@ -43,12 +46,11 @@ const Header = () => {
     };
 
     fetchUserProfile();
-  }, [router]); 
+  }, [router, pathname]); 
 
   useEffect(() => {
-    if ( user?.tipo === 'usuario' && pathname === '/admin') {
+    if (user?.tipo === 'usuario' && pathname === '/admin') {
       router.push('/');
-      console.log(user)
     }
   }, [user, pathname, router]); 
 
