@@ -155,11 +155,8 @@ const ProductList: React.FC = () => {
 
   return (
     <Box>
-      <Heading as="h1" size="xl" mb={6} textAlign="center" mt={8} color={'#b592c3'}>
-        Lista de Productos
-      </Heading>
-      <Center>
-        <Stack direction={{ base: 'column', md: 'row' }} spacing={4} mb={40}>
+      <Center bg={"black"}>
+        <Stack alignContent={"center"} direction={{ base: 'column', md: 'row' }} spacing={4} mb={40}>
           <Select
             color={'#8D8D8D'}
             placeholder='Filtrar por Categoria'

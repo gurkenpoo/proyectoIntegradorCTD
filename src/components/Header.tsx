@@ -140,7 +140,7 @@ const Header = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>User Profile</DrawerHeader>
+          <DrawerHeader>Perfil de Usuario</DrawerHeader>
 
           <DrawerBody>
             {/* Contenido del Drawer */}
