@@ -10,7 +10,7 @@ export default function Home() {
   <>
     <Header />
     <Carrousel />
-    <Search/>
+    {/* <Search/> */}
     <ProductList />
     <Testimonials />
     <Footer/>
