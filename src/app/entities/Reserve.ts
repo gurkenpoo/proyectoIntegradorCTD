@@ -13,6 +13,6 @@ export default class Reserve {
   @ManyToOne(() => User, (user) => user.reserves, { nullable: false })
   user: User;
 
-  @Column("date", { array: true, nullable: true })
-  reservedDates: Date[];
+  @Column("text", { array: true, nullable: true })
+  reservedDates: string[];
 }

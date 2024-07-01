@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import Users from "./entities/Users";
 import Category from "./entities/Category";
 import Products from "./entities/Products";
+import Reserve from "./entities/Reserve";
 
 // La instancia DataSource
 let dataSource: DataSource | null = null; // Inicializar como null
@@ -16,7 +17,7 @@ export const initializeDataSource = async (): Promise<DataSource> => {
       username: "akatosh",
       password: "tierra",
       database: "carmenere",
-      entities: [Products, Users, Category],
+      entities: [Products, Users, Category, Reserve],
       synchronize: true, // ¡Cuidado en producción!
       logging: true,
     });

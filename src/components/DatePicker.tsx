@@ -1,104 +1,237 @@
-// components/DatePicker.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, DateObject } from "react-multi-date-picker";
 import "./styles/datepicker.css";
-import { AbsoluteCenter, Box, Button, Divider, Text } from "@chakra-ui/react";
+import {
+  AbsoluteCenter,
+  Box,
+  Button,
+  Divider,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { RepeatClockIcon } from "@chakra-ui/icons";
 
-let reserved: any[] = [
-  
-];
-
-function agregarReservas(){
-  reserved = [[new DateObject().setDay(25).format(), new DateObject().setDay(26).format()],
-  [new DateObject().setDay(29).format(), new DateObject().setDay(30).format()],
-  [new DateObject().setDay(17).format(), new DateObject().setDay(18).format()]] 
-}
-
-setTimeout(agregarReservas, 8000)
-
-const inService: any[] = [
-  // [new DateObject().setDay(21).format(), new DateObject().setDay(22).format()],
-  // [new DateObject().setDay(27).format(), new DateObject().setDay(27).format()],
-];
-
-const DatePicker: React.FC = () => {
+const DatePicker: React.FC<{ productId: number }> = ({ productId }) => {
   const [values, setValues] = useState<DateObject[][]>([]);
+  const [selectedDatesToReserve, setSelectedDatesToReserve] = useState<
+    string[]
+  >([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [obtenerReserva, setObtenerReserva] = useState(true)
+  const [reservedDates, setReservedDates] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const toast = useToast();
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const [userId, setUserId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchReservedDates = async () => {
+      try {
+        const response = await fetch(`/api/reserves/${productId}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Respuesta de la API:", data);
+
+          const productReservedDates = data
+            .filter((reserve: any) => reserve.product.id === productId)
+            .flatMap((reserve: any) => reserve.reservedDates);
+
+          console.log("Fechas reservadas:", productReservedDates);
+
+          setReservedDates(productReservedDates);
+        } else {
+          console.error(
+            "Error al obtener las reservas:",
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error al obtener las reservas:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReservedDates();
+  }, [productId]);
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        try {
+          const response = await fetch("/api/auth/validate", { 
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setIsAuthenticated(true);
+            setUserId(data.userId); 
+          } else {
+            setIsAuthenticated(false);
+            setUserId(null);
+            localStorage.removeItem("token"); 
+          }
+        } catch (error) {
+          console.error("Error al verificar la autenticación:", error);
+          setIsAuthenticated(false);
+          setUserId(null);
+        }
+      } else {
+        setIsAuthenticated(false);
+        setUserId(null);
+      }
+    };
+
+    checkAuthentication();
+  }, []);
 
   const isReserved = (strDate: string) => {
-    return reserved.some(([start, end]) => strDate >= start && strDate <= end);
-  };
-
-  const isInService = (strDate: string) => {
-    return inService.some(([start, end]) => strDate >= start && strDate <= end);
+    console.log("Fecha actual:", strDate);
+    console.log("Fechas reservadas:", reservedDates);
+    return reservedDates.includes(strDate);
   };
 
   const handleDateChange = (ranges: DateObject[][]) => {
+    let allSelectedDates: string[] = [];
+
     for (const [rangeStart, rangeEnd] of ranges) {
       let date = new DateObject(rangeStart);
       while (date <= new DateObject(rangeEnd)) {
-        const formattedDate = date.format();
-        if (isReserved(formattedDate) || isInService(formattedDate)) {
-          setErrorMessage("No se pueden seleccionar rangos que incluyan fechas reservadas");
+        const formattedDate = date.format("YYYY-MM-DD");
+
+        allSelectedDates.push(formattedDate);
+
+        if (isReserved(formattedDate)) {
+          setErrorMessage(
+            "No se pueden seleccionar rangos que incluyan fechas reservadas"
+          );
           return;
         }
         date = date.add(1, "days");
       }
     }
+
     setErrorMessage(null);
-    setValues(ranges.slice(0, 1)); // Asegura que solo haya un rango seleccionado
+    setValues(ranges.slice(0, 1));
+
+    setSelectedDatesToReserve(allSelectedDates);
+  };
+
+  const handleReserve = async () => {
+    try {
+      const response = await fetch("/api/reserves", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          product: { id: productId },
+          user: { id: userId }, // Usar el ID del usuario autenticado
+          reservedDates: selectedDatesToReserve,
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Reserva creada correctamente",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Error al crear la reserva",
+          description: response.statusText,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error al crear la reserva:", error);
+      toast({
+        title: "Error al crear la reserva",
+        description: "Hubo un error al procesar tu solicitud.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const resetDates = () => {
     setValues([]);
+    setSelectedDatesToReserve([]);
     setErrorMessage(null);
-    setObtenerReserva(false);
   };
 
   return (
     <div>
-      <Box position='relative' padding='10'>
-  <Divider />
-  <AbsoluteCenter bg='white' px='4' as="b">
-    Reservar Tour
-  </AbsoluteCenter>
-</Box>
-      <Text as='i'>Selecciona el rango de fecha para tu reserva</Text>
+      <Box position="relative" padding="10">
+        <Divider />
+        <AbsoluteCenter bg="white" px="4" as="b">
+          Reservar Tour
+        </AbsoluteCenter>
+      </Box>
+      <Text as="i">Selecciona el rango de fecha para tu reserva</Text>
 
-      <div style={{ margin: "10px", display: 'flex', gap: '10px' }}>
+      <div style={{ margin: "10px", display: "flex", gap: "10px" }}>
         <div className="un-availble">
           <div className="reserved" />
           <p>Reservado</p>
         </div>
       </div>
 
-      <Calendar
-      minDate={new Date()}
+      {loading && <div>Cargando fechas reservadas...</div>}
 
+      <Calendar
+        minDate={new Date()}
         numberOfMonths={2}
-  disableMonthPicker
-  disableYearPicker
+        disableMonthPicker
+        disableYearPicker
         multiple
         range
         value={values}
         onChange={handleDateChange}
         mapDays={({ date }) => {
-          const strDate = date.format();
-          if (isReserved(strDate) || isInService(strDate)) {
+          const strDate = date.format("YYYY-MM-DD");
+          if (isReserved(strDate)) {
             return {
               disabled: true,
+              className: "reserved",
             };
           }
           return {};
         }}
       />
-      {obtenerReserva && <div className="error-message">No se pudo obtener las fechas correctamente, haz click en 'Actualizar Calendario'</div>}
 
       {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-      <Button colorScheme='cyan' rightIcon={<RepeatClockIcon />} variant='outline' onClick={resetDates}>Actualizar Calendario</Button>
+      <Button
+        colorScheme="cyan"
+        rightIcon={<RepeatClockIcon />}
+        variant="outline"
+        onClick={resetDates}
+      >
+        Actualizar Calendario
+      </Button>
+
+      {/* Mostrar el botón solo si está autenticado */}
+      {isAuthenticated && ( 
+        <Button
+          onClick={handleReserve}
+          isDisabled={selectedDatesToReserve.length === 0}
+          mt={4}
+        >
+          Reservar ahora
+        </Button>
+      )}
 
       <div>
         {values.map((range, index) => (

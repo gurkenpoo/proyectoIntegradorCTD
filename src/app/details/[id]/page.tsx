@@ -10,7 +10,6 @@ import {
   Image,
   Flex,
   VStack,
-  Button,
   Heading,
   SimpleGrid,
   StackDivider,
@@ -21,20 +20,12 @@ import {
   Center,
   Link,
   Skeleton,
+  Button,
 } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import Header from '@/components/Header';
 import DatePicker from '@/components/DatePicker'; 
-
-interface Product {
-  id: number;
-  name: string;
-  originalPrice: number;
-  discountPrice: number;
-  imageUrls: string[];
-  category: string;
-  description: string;
-}
+import { Product } from '@/app/admin/types';
 
 function Page({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -59,6 +50,38 @@ function Page({ params }: { params: { id: string } }) {
 
     fetchProducts();
   }, [id]);
+
+  // Función para manejar el envío de la reserva
+  const handleReserve = async (reservedDates: string[]) => {
+    if (product) {
+      try {
+        const response = await fetch("/api/reserves", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            product: { id: product.id },
+            user: { id: 1 }, // Reemplaza con el ID del usuario actual
+            reservedDates: reservedDates,
+          }),
+        });
+
+        if (response.ok) {
+          console.log("Reserva creada correctamente");
+        } else {
+          console.error(
+            "Error al crear la reserva:",
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error al crear la reserva:", error);
+      }
+    } else {
+      console.error("Error: El producto no está definido."); 
+    }
+  };
 
   if (loading) {
     return (
@@ -198,27 +221,13 @@ function Page({ params }: { params: { id: string } }) {
                 </List>
               </Box>
             </Stack>
-            <DatePicker/>
+            {product && <DatePicker productId={product.id} />} 
 
-            <Button
-              rounded={'15'}
-              w={'full'}
-              mt={8}
-              size={'lg'}
-              py={'7'}
-              bg={useColorModeValue('gray.900', 'gray.50')}
-              color={useColorModeValue('white', 'gray.900')}
-              textTransform={'uppercase'}
-              _hover={{
-                transform: 'translateY(2px)',
-                boxShadow: 'lg',
-              }}>
-              Reservar ahora
-            </Button>
+            {/* Se eliminó el botón "Reservar ahora" */}
 
             <Stack direction="row" alignItems="center" justifyContent={'center'}>
               <MdLocalShipping />
-              <Text> El correo de confirmacion llegara en unos minutos</Text>
+              <Text> El correo de confirmación llegará en unos minutos</Text>
               <MdLocalShipping />
             </Stack>
             <Stack direction='row' spacing={4} justifyContent={'center'}>
