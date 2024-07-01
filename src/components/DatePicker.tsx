@@ -8,10 +8,21 @@ import {
   Divider,
   Text,
   useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { RepeatClockIcon } from "@chakra-ui/icons";
 
-const DatePicker: React.FC<{ productId: number }> = ({ productId }) => {
+const DatePicker: React.FC<{ productId: number; product: any }> = ({
+  productId,
+  product,
+}) => {
   const [values, setValues] = useState<DateObject[][]>([]);
   const [selectedDatesToReserve, setSelectedDatesToReserve] = useState<
     string[]
@@ -20,8 +31,9 @@ const DatePicker: React.FC<{ productId: number }> = ({ productId }) => {
   const [reservedDates, setReservedDates] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
-  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchReservedDates = async () => {
@@ -60,7 +72,7 @@ const DatePicker: React.FC<{ productId: number }> = ({ productId }) => {
 
       if (token) {
         try {
-          const response = await fetch("/api/auth/validate", { 
+          const response = await fetch("/api/auth/validate", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -71,11 +83,12 @@ const DatePicker: React.FC<{ productId: number }> = ({ productId }) => {
           if (response.ok) {
             const data = await response.json();
             setIsAuthenticated(true);
-            setUserId(data.userId); 
+            setUserId(data.userId);
+            setUserName(data.userName);
           } else {
             setIsAuthenticated(false);
             setUserId(null);
-            localStorage.removeItem("token"); 
+            localStorage.removeItem("token");
           }
         } catch (error) {
           console.error("Error al verificar la autenticación:", error);
@@ -171,6 +184,8 @@ const DatePicker: React.FC<{ productId: number }> = ({ productId }) => {
     setErrorMessage(null);
   };
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <div>
       <Box position="relative" padding="10">
@@ -223,15 +238,63 @@ const DatePicker: React.FC<{ productId: number }> = ({ productId }) => {
       </Button>
 
       {/* Mostrar el botón solo si está autenticado */}
-      {isAuthenticated && ( 
+      {isAuthenticated && (
         <Button
-          onClick={handleReserve}
+          onClick={onOpen}
           isDisabled={selectedDatesToReserve.length === 0}
           mt={4}
         >
-          Reservar ahora
+          Seleccionar fechas
         </Button>
       )}
+
+      {/* Modal */}
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
+        <ModalContent>
+          <ModalHeader>Confirmar Reserva</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {/* Mostrar detalles del producto */}
+            <Text fontWeight="bold">Producto:</Text>
+            <Text>{product.name}</Text>
+
+            {/* Mostrar fechas seleccionadas */}
+            <Text fontWeight="bold" mt={4}>
+              Fechas seleccionadas:
+            </Text>
+            {selectedDatesToReserve.map((date, index) => (
+              <Text key={index}>{date}</Text>
+            ))}
+
+            {/* Mostrar información del usuario */}
+            {userId && (
+              <>
+                <Text fontWeight="bold" mt={4}>
+                  Usuario:
+                </Text>
+                <Text>ID: {userId}</Text>
+                {userName && <Text>Nombre: {userName}</Text>}
+              </>
+            )}
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button variant="ghost" onClick={() => {
+              handleReserve();
+              onClose(); // Cerrar el modal después de realizar la reserva
+            }}>
+              Realizar Reserva
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       <div>
         {values.map((range, index) => (

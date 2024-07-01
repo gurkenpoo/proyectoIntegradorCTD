@@ -221,7 +221,7 @@ function Page({ params }: { params: { id: string } }) {
                 </List>
               </Box>
             </Stack>
-            {product && <DatePicker productId={product.id} />} 
+            {product && <DatePicker productId={product.id} product={product}  />} 
 
             {/* Se eliminó el botón "Reservar ahora" */}
 
