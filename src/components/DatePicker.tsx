@@ -16,6 +16,8 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  AvatarGroup,
+  Avatar,
 } from "@chakra-ui/react";
 import { RepeatClockIcon } from "@chakra-ui/icons";
 
@@ -34,6 +36,8 @@ const DatePicker: React.FC<{ productId: number; product: any }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  
 
   useEffect(() => {
     const fetchReservedDates = async () => {
@@ -81,10 +85,11 @@ const DatePicker: React.FC<{ productId: number; product: any }> = ({
           });
 
           if (response.ok) {
-            const data = await response.json();
-            setIsAuthenticated(true);
-            setUserId(data.userId);
-            setUserName(data.userName);
+  const data = await response.json();
+  setIsAuthenticated(true);
+  setUserId(data.userId);
+  setUserName(data.nombre);
+  setUserEmail(data.email)
           } else {
             setIsAuthenticated(false);
             setUserId(null);
@@ -238,7 +243,7 @@ const DatePicker: React.FC<{ productId: number; product: any }> = ({
       </Button>
 
       {/* Mostrar el botón solo si está autenticado */}
-      {isAuthenticated && (
+      {isAuthenticated ? (
         <Button
           onClick={onOpen}
           isDisabled={selectedDatesToReserve.length === 0}
@@ -246,6 +251,8 @@ const DatePicker: React.FC<{ productId: number; product: any }> = ({
         >
           Seleccionar fechas
         </Button>
+      ) : (
+        <Text mt={4} color="red.500">Debes estar loggeado para realizar una reserva</Text>
       )}
 
       {/* Modal */}
@@ -261,6 +268,20 @@ const DatePicker: React.FC<{ productId: number; product: any }> = ({
             {/* Mostrar detalles del producto */}
             <Text fontWeight="bold">Producto:</Text>
             <Text>{product.name}</Text>
+       {product.imageUrls && (
+        <AvatarGroup size="xl" max={2}>
+          {product.imageUrls.map((imageUrl: string, index: number) => ( // Especificar tipos
+            <Avatar
+              key={index}
+              name={product.name}
+              src={imageUrl}
+            />
+          ))}
+        </AvatarGroup>
+      )}
+            <hr></hr>
+            {/* Mostrar AvatarGroup con las imágenes del producto */}
+            <Text>{product.description}</Text>
 
             {/* Mostrar fechas seleccionadas */}
             <Text fontWeight="bold" mt={4}>
@@ -274,10 +295,11 @@ const DatePicker: React.FC<{ productId: number; product: any }> = ({
             {userId && (
               <>
                 <Text fontWeight="bold" mt={4}>
-                  Usuario:
-                </Text>
-                <Text>ID: {userId}</Text>
-                {userName && <Text>Nombre: {userName}</Text>}
+      Usuario:
+    </Text>
+    <Text>ID: {userId}</Text> 
+    <Text>Nombre: {userName}</Text>
+    <Text>Email: {userEmail}</Text>
               </>
             )}
           </ModalBody>
