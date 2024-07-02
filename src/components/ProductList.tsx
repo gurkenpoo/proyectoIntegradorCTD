@@ -23,6 +23,9 @@ import { Product } from '@/app/admin/types';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { SearchIcon } from '@chakra-ui/icons';
 import './styles/inputPicker.css'
+import { getDataSource } from '@/app/DataSource';
+import { Repository, In } from 'typeorm';
+import Reserve from '@/app/entities/Reserve';
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   return (
@@ -90,11 +93,10 @@ const ProductList: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]); 
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
-   const [selectedDates, setSelectedDates] = useState<DateObject[][]>([]);
-   const isSmallScreen = useBreakpointValue({ base: true, md: false }); 
+  const [selectedDates, setSelectedDates] = useState<DateObject[][]>([]);
+  const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
-   
-const handlePrintDates = () => {
+  const handlePrintDates = () => {
     console.log("Fechas seleccionadas:", selectedDates);
     
     selectedDates.forEach(range => {
@@ -140,7 +142,7 @@ const handlePrintDates = () => {
 
   useEffect(() => {
     filterProducts();
-  }, [products, searchText, selectedCategory]);
+  }, [products, searchText, selectedCategory, selectedDates]);
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(event.target.value);
@@ -148,6 +150,11 @@ const handlePrintDates = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
+  };
+
+  const handleDateChange = (dates: DateObject[][]) => {
+    setSelectedDates(dates);
+    filterProducts();
   };
 
   const shuffleArray = (array: any[]) => {
@@ -158,7 +165,7 @@ const handlePrintDates = () => {
     return array;
   };
 
-  const filterProducts = () => {
+  const filterProducts = async () => {
     let filtered = products;
 
     if (selectedCategory) {
@@ -167,6 +174,28 @@ const handlePrintDates = () => {
 
     if (searchText) {
       filtered = filtered.filter(product => product.name.toLowerCase().includes(searchText.toLowerCase()));
+    }
+
+    if (selectedDates.length > 0) {
+      const startDate = selectedDates[0][0]?.format("DD-MM-YYYY");
+      const endDate = selectedDates[0][1]?.format("DD-MM-YYYY");
+
+      if (startDate && endDate) {
+        const dataSource = await getDataSource();
+        const reserveRepository: Repository<Reserve> = dataSource.getRepository(Reserve); 
+
+        const reserves = await reserveRepository.find({
+          where: {
+            reservedDates: In([startDate, endDate]) 
+          },
+        });
+
+        // Obtener todos los productos reservados en el rango
+        const reservedProductsIds = reserves.map(reserve => reserve.product.id);
+
+        // Filtrar los productos que no están reservados en el rango
+        filtered = products.filter(product => !reservedProductsIds.includes(product.id));
+      }
     }
 
     filtered = shuffleArray(filtered);
@@ -222,7 +251,7 @@ const handlePrintDates = () => {
           placeholder='Seleccionar fechas'
             inputClass="custom-input"
             value={selectedDates}
-            onChange={setSelectedDates}
+            onChange={handleDateChange}
             multiple
             range
             minDate={new Date()}

@@ -1,4 +1,4 @@
-import { DataSource, Repository } from "typeorm";
+import { DataSource, In, Repository } from "typeorm";
 import { ReserveDAO } from "../dao/Reserve.dao";
 import Reserve from "../entities/Reserve";
 import { ReserveInt } from "@/interfaces/ReserveInt";
@@ -50,5 +50,19 @@ export class ReserveService {
   }
   async createReserve(reserveData: Omit<Reserve, "id">): Promise<Reserve> {
     return await this.reserveDAO.create(reserveData);
+  }
+  async getReservedDatesInRange(
+    productId: number,
+    startDate: string,
+    endDate: string
+  ): Promise<string[]> {
+    const reserves = await this.reserveRepository.find({
+      where: {
+        product: { id: productId },
+        reservedDates: In([startDate, endDate]),
+      },
+    });
+
+    return reserves.flatMap((reserve) => reserve.reservedDates);
   }
 }
