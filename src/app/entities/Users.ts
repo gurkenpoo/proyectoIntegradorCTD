@@ -19,4 +19,6 @@ export default class Users {
 
   @Column({ default: "usuario" }) // Valor por defecto 'usuario'
   tipo: string;
+  @Column({ nullable: true })
+  reserves: any;
 }

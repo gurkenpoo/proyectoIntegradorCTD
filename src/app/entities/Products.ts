@@ -22,4 +22,6 @@ export default class Products {
 
   @Column({ nullable: false })
   category: string;
+  @Column({ nullable: true })
+  reserves: any;
 }
