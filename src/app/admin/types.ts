@@ -6,5 +6,4 @@ export interface Product {
   originalPrice: number;
   discountPrice: number;
   category: string;
-  reservedDates: Date[];
 }
