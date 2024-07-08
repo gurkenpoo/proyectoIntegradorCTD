@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+"emitDecoratorMetadata": true,
+"experimentalDecorators": true,
+"strictPropertyInitialization": false,
     "skipLibCheck": true,
     "lib": [
       "dom",
