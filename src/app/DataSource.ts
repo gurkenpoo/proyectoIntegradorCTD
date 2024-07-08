@@ -6,20 +6,19 @@ import Reserve from "./entities/Reserve";
 
 // La instancia DataSource
 let dataSource: DataSource | null = null; // Inicializar como null
+const databaseUrl =
+  process.env.DATABASE_URL ||
+  "postgres://akatosh:tierra@localhost:5432/carmenere"; // Proporciona un valor por defecto si no está definida en producción
 
 // Inicializa la fuente de datos
 export const initializeDataSource = async (): Promise<DataSource> => {
   if (!dataSource) {
     dataSource = new DataSource({
+      url: databaseUrl, // Solamente la URL
       type: "postgres",
-      host: "localhost",
-      port: 5432,
-      username: "akatosh",
-      password: "tierra",
-      database: "carmenere",
       entities: [Products, Users, Category, Reserve],
-      synchronize: true, // ¡Cuidado en producción!
-      logging: true,
+      synchronize: false,
+      logging: false,
     });
 
     try {
